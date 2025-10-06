@@ -99,3 +99,18 @@
   color: #EF4444;
   margin-left: 0.25rem;
 }
+
+.form-error {
+  background-color: #FEF2F2;
+  color: #B91C1C;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid #FCA5A5;
+  margin-bottom: 1.5rem;
+}
+
+.form-submit-btn:disabled,
+.form-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

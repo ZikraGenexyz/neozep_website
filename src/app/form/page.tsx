@@ -1,18 +1,20 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Navbar from "../../components/navbar";
+import { useRouter } from "next/navigation";
 import "../styles/layout.css";
 import "../styles/form.css";
 
 export default function FormPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     nama: "",
     namaToko: "",
     alamat: "",
     email: "",
-    telepon: "",
-    video: null as File | null
+    telepon: ""
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -23,33 +25,54 @@ export default function FormPage() {
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({
-        ...formData,
-        video: e.target.files[0]
-      });
-    }
-  };
+  // Video upload is no longer needed
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
-    
-    // For demo purposes, show an alert
-    alert("Form submitted successfully!");
-    
-    // Reset the form
-    setFormData({
-      nama: "",
-      namaToko: "",
-      alamat: "",
-      email: "",
-      telepon: "",
-      video: null
-    });
+    try {
+      // Convert form field names to match API expectations
+      const submissionData = {
+        nama: formData.nama,
+        nama_toko: formData.namaToko,
+        alamat: formData.alamat,
+        email: formData.email,
+        telepon: formData.telepon
+      };
+      
+      const response = await fetch('/api/submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit form');
+      }
+      
+      // Reset the form
+      setFormData({
+        nama: "",
+        namaToko: "",
+        alamat: "",
+        email: "",
+        telepon: ""
+      });
+      
+      // Show success message and redirect
+      alert("Form submitted successfully!");
+      router.push('/'); // Redirect to homepage
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      console.error('Error submitting form:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -124,9 +147,28 @@ export default function FormPage() {
                 />
               </div>
               
+              {error && (
+                <div className="form-error">
+                  {error}
+                </div>
+              )}
+              
               <div className="form-buttons">
-                <button type="submit" className="form-submit-btn">Submit</button>
-                <button type="button" className="form-cancel-btn" onClick={() => window.history.back()}>Cancel</button>
+                <button 
+                  type="submit" 
+                  className="form-submit-btn" 
+                  disabled={loading}
+                >
+                  {loading ? 'Submitting...' : 'Submit'}
+                </button>
+                <button 
+                  type="button" 
+                  className="form-cancel-btn" 
+                  onClick={() => window.history.back()}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>

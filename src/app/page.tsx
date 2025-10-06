@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Navbar from "../components/navbar";
 import DataTable from "../components/table";
+import CSVDownloader from "../components/csvDownloader";
 import "./styles/layout.css";
 
 export default function Home() {
@@ -14,9 +14,10 @@ export default function Home() {
           <div className="table-container">
             <div className="table-title-container">
               <span className="table-title">Pending Submissions</span>
+              <CSVDownloader style={{ visibility: "hidden" }} status="pending" />
             </div>
             <div className="table-content">
-              <DataTable />
+              <DataTable status="pending" />
             </div>
           </div>
         </main>

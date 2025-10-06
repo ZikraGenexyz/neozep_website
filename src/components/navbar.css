@@ -1,30 +1,34 @@
 .navbar {
-  width: 16rem; /* w-64 */
+  width: 16vw; /* w-64 */
   background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
   padding: 1.5rem; /* p-6 */
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: all 0.3s ease;
 }
 
-.navbar.active {
-  width: 8rem; /* w-64 */
+.navbar.hidden {
+  width: 8vw; /* w-64 */
   align-items: center;
+  padding: 1.5rem 0.5rem;
+  transition: all 0.3s ease;
 }
 
-.navbar.active .nav-link svg {
+.navbar.hidden .nav-link svg {
   margin: 0 0 0.5rem 0;
 }
 
-.navbar.active .nav-list {
+.navbar.hidden .nav-list {
   gap: 0.5rem;
 }
 
-.navbar.active .close-button .icon-fa {
+.navbar.hidden .close-button .icon-fa {
   rotate: 180deg;
+  transition: rotate 0.5s ease;
 }
 
-.navbar.active .nav-link {
+.navbar.hidden .nav-link {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,12 +75,19 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem; /* space-y-4 */
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .nav-link {
   color: #ffffff9d;
   font-size: 14px;
   padding: 0.5rem;
+}
+
+.nav-link.active {
+  color: #ffffff;
+  transition-property: color, background-color, border-color;
 }
 
 .nav-link:hover {
@@ -87,8 +98,14 @@
 .border {
   border: none;
   border-top: 1px solid #ffffff51;
-  margin: 0.5rem 0;
+  margin: 0;
   transition-property: color, background-color, border-color; /* transition-colors */
+}
+
+.navbar.hidden .border {
+  width: 80%;
+  margin: 0;
+  border-top: 1px solid #ffffff51;
 }
 
 .icon {
@@ -96,11 +113,22 @@
   height: 1.25rem; /* h-5 */
 }
 
-.logo {
-  padding: 0.5rem;
+.logo-container {
+  width: 100%;
+  height: 3.5rem;
+  display: flex;
+  justify-content: center;
   margin-bottom: 1rem;
+}
+
+.logo {
+  padding: 0;
   filter: brightness(0) invert(1); /* logo to white */
   object-fit: contain;
+}
+
+.navbar.hidden .logo {
+  padding: 0 0.5rem;
 }
 
 .icon-fa {
@@ -114,12 +142,13 @@
   justify-content: center;
   width: 2.75rem;
   height: 2.75rem;
-  margin: 1rem auto 0 auto;
+  margin: 1.5rem auto 0 auto;
   z-index: 50;
   padding: 0.5rem;
   background-color: #ffffff30;
   border-radius: 50%;
   transition-property: color, background-color, border-color;
+  cursor: pointer;
 }
 
 .close-button:hover {
@@ -131,4 +160,5 @@
     height: 1rem;
     margin-right: 0;
     opacity: 0.75;
+    transition: transform 0.3s ease, rotate 0.5s ease;
 }
