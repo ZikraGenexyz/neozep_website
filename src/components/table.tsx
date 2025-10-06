@@ -34,6 +34,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rowSpan, setRowSpan] = useState(10);
   const [page, setPage] = useState(1);
@@ -73,16 +74,18 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
 
   useEffect(() => {
     fetchSubmissions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
   
   // Expose fetchSubmissions function via ref
   useEffect(() => {
     if (tableRef) {
-      // @ts-ignore - Using forwardRef with function components
+      // @ts-expect-error - Using forwardRef with function components
       tableRef.current = {
         fetchSubmissions
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableRef]);
   
   // Sort submissions when sortColumn or sortDirection changes
@@ -129,6 +132,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   };
   
   // Handle status change
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleStatusChange = async (id: number, newStatus: 'pending' | 'finished' | 'rejected') => {
     setActionLoading(id);
     try {
@@ -158,6 +162,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   };
   
   // Handle delete
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this submission?')) {
       return;
@@ -223,6 +228,11 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
           setUploadProgress(percent);
+          
+          // When upload reaches 100%, set processing state to true
+          if (percent === 100) {
+            setIsProcessing(true);
+          }
         },
         (error) => {
           console.error("Upload failed:", error);
@@ -252,7 +262,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
               submission.id === uploadingId ? { ...submission, status: 'finished', video_url: url } : submission
             ));
 
-            alert('Video uploaded successfully');
+            // alert('Video uploaded successfully');
             
             // Refresh the data after successful upload
             fetchSubmissions();
@@ -263,6 +273,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
             setActionLoading(null);
             setUploadingId(null);
             setUploadProgress(0);
+            setIsProcessing(false);
             // Reset file input
             if (fileInputRef.current) {
               fileInputRef.current.value = '';
@@ -314,6 +325,16 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
               <div className="progress-fill" style={{ width: `${uploadProgress}%` }}></div>
             </div>
             <div className="progress-text">Uploading: {uploadProgress}%</div>
+          </div>
+        )}
+        
+        {/* Processing indicator (circular loader) */}
+        {uploadingId !== null && isProcessing && (
+          <div className="upload-progress">
+            <div className="circular-loader">
+              <div className="spinner"></div>
+              <div className="circular-loader-text">Processing video...</div>
+            </div>
           </div>
         )}
         

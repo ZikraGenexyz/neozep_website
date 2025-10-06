@@ -1,0 +1,18 @@
+.download-csv-button {
+  background-color: #10B981;
+  color: #FFFFFF;
+  /* Focus border for accessibility */
+  &:focus, &:focus-visible {
+    border-color: #059669;
+    box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+  }
+}
+
+.download-csv-button:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.download-csv-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

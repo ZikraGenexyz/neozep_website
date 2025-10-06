@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import "./csvbutton.css";
 
 interface Submission {
   id: number;
@@ -50,6 +51,7 @@ export default function CSVDownloader({ status, className = "download-csv-button
     };
 
     fetchSubmissions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   // Function to download submissions as CSV

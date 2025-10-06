@@ -111,51 +111,6 @@
   color: var(--text);
 }
 
-.download-csv-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--text);
-  padding: 0.5rem 1rem;
-  background-color: #10B981;
-  color: #FFFFFF;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.3s ease, border-color 0.2s;
-  gap: 0.5rem;
-  outline: none;
-  /* Focus border for accessibility */
-  &:focus, &:focus-visible {
-    border-color: #059669;
-    box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
-  }
-}
-
-.download-csv-button:hover:not(:disabled) {
-  background-color: #059669;
-}
-
-.download-csv-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.refresh-button {
-  background-color: #3c64dc;
-  color: #FFFFFF;
-}
-
-.refresh-button:hover:not(:disabled) {
-  background-color: #2047b9;
-}
-
-.refresh-button svg {
-  width: 1rem;
-  height: 1rem;
-}
-
 .table-title-buttons {
   display: flex;
   align-items: center;
@@ -175,26 +130,4 @@ button {
   transition: all 0.3s ease, border-color 0.2s;
   gap: 0.5rem;
   outline: none;
-}
-
-.refresh-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.refresh-button .icon {
-  transition: transform 0.5s ease;
-}
-
-.refresh-button.spinning .icon {
-  animation: spin 1s infinite linear;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
