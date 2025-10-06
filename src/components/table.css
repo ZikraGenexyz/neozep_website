@@ -44,7 +44,7 @@
 
 .data-table tbody {
   display: block;
-  max-height: 40vh;
+  max-height: 43vh;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none; /* Firefox */

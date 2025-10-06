@@ -1,6 +1,5 @@
 import Navbar from "../components/navbar";
-import DataTable from "../components/table";
-import CSVDownloader from "../components/csvDownloader";
+import TableWrapper from "../components/tableWrapper";
 import "./styles/layout.css";
 
 export default function Home() {
@@ -12,13 +11,7 @@ export default function Home() {
           {/* Main content goes here */}
           <h1 className="header-title">Pending</h1>
           <div className="table-container">
-            <div className="table-title-container">
-              <span className="table-title">Pending Submissions</span>
-              <CSVDownloader style={{ visibility: "hidden" }} status="pending" />
-            </div>
-            <div className="table-content">
-              <DataTable status="pending" />
-            </div>
+            <TableWrapper status="pending" />
           </div>
         </main>
         <footer className="footer">

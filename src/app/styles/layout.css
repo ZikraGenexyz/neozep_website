@@ -42,21 +42,15 @@
 /* Main content area */
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 2rem 0 2rem;
   background-color: var(--background);
 }
 
 /* Footer styles */
 .footer {
   width: 100%;
-  padding: 1rem 2rem;
-  border-top: 1px solid #e5e7eb;
-  background-color: #ffffff;
-}
-
-.dark .footer {
-  border-color: #374151;
-  background-color: #111827;
+  padding: 0 2rem 1.5rem 2rem;
+  background-color: transparent;
 }
 
 .footer-content {
@@ -146,4 +140,61 @@
 .download-csv-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.refresh-button {
+  background-color: #3c64dc;
+  color: #FFFFFF;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background-color: #2047b9;
+}
+
+.refresh-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.table-title-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.3s ease, border-color 0.2s;
+  gap: 0.5rem;
+  outline: none;
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refresh-button .icon {
+  transition: transform 0.5s ease;
+}
+
+.refresh-button.spinning .icon {
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

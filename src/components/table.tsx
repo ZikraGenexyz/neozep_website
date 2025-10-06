@@ -21,9 +21,10 @@ interface Submission {
 
 interface DataTableProps {
   status?: string;
+  tableRef?: React.ForwardedRef<{ fetchSubmissions: () => Promise<void> }>;
 }
 
-export default function DataTable({ status }: DataTableProps = {}) {
+export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   // const router = useRouter();
   const [sortColumn, setSortColumn] = useState("submission_time");
   const [sortDirection, setSortDirection] = useState("desc");
@@ -73,6 +74,16 @@ export default function DataTable({ status }: DataTableProps = {}) {
   useEffect(() => {
     fetchSubmissions();
   }, [status]);
+  
+  // Expose fetchSubmissions function via ref
+  useEffect(() => {
+    if (tableRef) {
+      // @ts-ignore - Using forwardRef with function components
+      tableRef.current = {
+        fetchSubmissions
+      };
+    }
+  }, [tableRef]);
   
   // Sort submissions when sortColumn or sortDirection changes
   const sortedSubmissions = [...submissions].sort((a, b) => {

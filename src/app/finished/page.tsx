@@ -1,8 +1,7 @@
 import Navbar from "../../components/navbar";
 import "../styles/layout.css";
 import "../styles/finished.css";
-import DataTable from "../../components/table";
-import CSVDownloader from "../../components/csvDownloader";
+import TableWrapper from "@/components/tableWrapper";
 
 export default function FinishedPage() {
     return (
@@ -13,13 +12,7 @@ export default function FinishedPage() {
             {/* Main content goes here */}
             <h1 className="header-title">Finished</h1>
             <div className="table-container">
-                <div className="table-title-container">
-                <span className="table-title">Finished Submissions</span>
-                <CSVDownloader status="finished" />
-                </div>
-                <div className="table-content">
-                <DataTable status="finished" />
-                </div>
+                <TableWrapper status="finished" />
             </div>
             </main>
             <footer className="footer">
