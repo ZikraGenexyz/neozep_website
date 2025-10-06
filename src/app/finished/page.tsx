@@ -1,19 +1,20 @@
 import Image from "next/image";
-import Navbar from "../components/navbar";
-import DataTable from "../components/table";
-import "./styles/layout.css";
+import Navbar from "../../components/navbar";
+import "../styles/layout.css";
+import "../styles/finished.css";
+import DataTable from "../../components/table";
 
-export default function Home() {
+export default function FinishedPage() {
   return (
     <div className="main-container">
       <Navbar />
       <div className="content-wrapper">
         <main className="main-content">
           {/* Main content goes here */}
-          <h1 className="header-title">Pending</h1>
+          <h1 className="header-title">Finished</h1>
           <div className="table-container">
             <div className="table-title-container">
-              <span className="table-title">Pending Submissions</span>
+              <span className="table-title">Finished Submissions</span>
             </div>
             <div className="table-content">
               <DataTable />
