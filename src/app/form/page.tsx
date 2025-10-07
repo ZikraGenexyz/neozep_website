@@ -85,132 +85,142 @@ export default function FormPage() {
     <div className="main-container">
       <div className="content-wrapper" style={{ maxWidth: '100vw !important' }}>
         <main className="main-content">
-          <h1 className="header-title" style={{ display: 'flex', justifyContent: 'center' }}>Neozep Form</h1>
-          
-          <div className="form-container">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="nama" className="form-label required-field">Nama</label>
-                <input
-                  type="text"
-                  id="nama"
-                  name="nama"
-                  className="form-input"
-                  value={formData.nama}
-                  onChange={handleInputChange}
-                  required
-                />
+          <div className="form-page-layout">
+            <div className="form-logo-section">
+              <div className="form-logo-wrapper">
+                <img src="/neozep_logo.png" alt="Neozep Logo" className="form-logo" />
+                <span className="form-logo-text">SUBMISSION FORM</span>
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="namaToko" className="form-label required-field">Nama Toko</label>
-                <input
-                  type="text"
-                  id="namaToko"
-                  name="namaToko"
-                  className="form-input"
-                  value={formData.namaToko}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="alamat" className="form-label required-field">Alamat</label>
-                <textarea
-                  id="alamat"
-                  name="alamat"
-                  className="form-input form-textarea"
-                  value={formData.alamat}
-                  onChange={handleInputChange}
-                  required
-                ></textarea>
-              </div>
+            </div>
+            <div className="form-section">
+              {/* <h1 className="header-title">Neozep Form</h1> */}
+              <div className="form-container">
+                <form onSubmit={handleSubmit}>
 
-              <div className="form-group">
-                <label htmlFor="kecamatan" className="form-label required-field">Kecamatan</label>
-                <input
-                  type="text"
-                  id="kecamatan"
-                  name="kecamatan"
-                  className="form-input"
-                  value={formData.kecamatan}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
+                  {/* <div className="form-row"> */}
+                    <div className="form-group">
+                      <label htmlFor="nama" className="form-label required-field">Nama</label>
+                      <input
+                        type="text"
+                        id="nama"
+                        name="nama"
+                        className="form-input"
+                        value={formData.nama}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
 
-              <div className="form-group">
-                <label htmlFor="kelurahan" className="form-label required-field">Kelurahan</label>
-                <input
-                  type="text"
-                  id="kelurahan"
-                  name="kelurahan"
-                  className="form-input"
-                  value={formData.kelurahan}
-                  onChange={handleInputChange}
-                  required
-                />
+                    <div className="form-group">
+                      <label htmlFor="namaToko" className="form-label required-field">Nama Toko</label>
+                      <input
+                        type="text"
+                        id="namaToko"
+                        name="namaToko"
+                        className="form-input"
+                        value={formData.namaToko}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  {/* </div> */}
+                  
+                  
+                  <div className="form-group">
+                    <label htmlFor="alamat" className="form-label required-field">Alamat</label>
+                    <textarea
+                      id="alamat"
+                      name="alamat"
+                      className="form-input form-textarea"
+                      value={formData.alamat}
+                      onChange={handleInputChange}
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div className="form-row">  
+                    <div className="form-group">
+                      <label htmlFor="kecamatan" className="form-label required-field">Kecamatan</label>
+                      <input
+                        type="text"
+                        id="kecamatan"
+                        name="kecamatan"
+                        className="form-input"
+                        value={formData.kecamatan}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="kelurahan" className="form-label required-field">Kelurahan</label>
+                      <input
+                        type="text"
+                        id="kelurahan"
+                        name="kelurahan"
+                        className="form-input"
+                        value={formData.kelurahan}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="email" className="form-label required-field">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        className="form-input"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="telepon" className="form-label required-field">Telepon</label>
+                      <input
+                        type="tel"
+                        id="telepon"
+                        name="telepon"
+                        className="form-input"
+                        value={formData.telepon}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  
+                  {error && (
+                    <div className="form-error">
+                      {error}
+                    </div>
+                  )}
+                  
+                  <div className="form-buttons">
+                    <button 
+                      type="submit" 
+                      className="form-submit-btn" 
+                      disabled={loading}
+                    >
+                      {loading ? 'Submitting...' : 'Submit'}
+                    </button>
+                  </div>
+                </form>
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="email" className="form-label required-field">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="form-input"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="telepon" className="form-label required-field">Telepon</label>
-                <input
-                  type="tel"
-                  id="telepon"
-                  name="telepon"
-                  className="form-input"
-                  value={formData.telepon}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              {error && (
-                <div className="form-error">
-                  {error}
-                </div>
-              )}
-              
-              <div className="form-buttons">
-                <button 
-                  type="submit" 
-                  className="form-submit-btn" 
-                  disabled={loading}
-                >
-                  {loading ? 'Submitting...' : 'Submit'}
-                </button>
-                <button 
-                  type="button" 
-                  className="form-cancel-btn" 
-                  onClick={() => window.history.back()}
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         </main>
         
-        <footer className="footer">
+        {/* <footer className="footer">
           <div className="footer-content">
             &copy; {new Date().getFullYear()} Neozep. All rights reserved.
           </div>
-        </footer>
+        </footer> */}
       </div>
     </div>
   );

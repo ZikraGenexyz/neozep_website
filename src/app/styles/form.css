@@ -1,8 +1,77 @@
+.form-page-layout {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 80vh;
+}
+
+.main-content {
+  background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
+  padding: 0;
+}
+
+.form-logo-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  /* background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%); */
+  background-color: transparent;
+}
+
+.form-logo {
+  width: 25vw;
+  object-fit: contain;
+  filter: brightness(0) invert();
+}
+
+.form-logo-text {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  width: 100%;
+  text-align: left;
+}
+
+.form-section {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background);
+  max-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+}
+
 .form-container {
+  background-color: var(--background);
+  border-radius: 0.75rem;
+  width: 100%;
+  padding: 2rem;
+}
+
+.form-title-container {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  padding: 1rem;
+}
+
+.form-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
 }
 
 .form-title {
@@ -12,7 +81,15 @@
   color: var(--text);
 }
 
+.form-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  width: 100%;
+}
+
 .form-group {
+  flex: 1;
   margin-bottom: 1.5rem;
 }
 
@@ -90,8 +167,8 @@
 
 .form-buttons {
   display: flex;
-  justify-content: flex-start;
-  margin-top: 2rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .required-field::after {
@@ -113,4 +190,25 @@
 .form-cancel-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+  .form-page-layout {
+    flex-direction: column;
+  }
+  
+  .form-logo-section {
+    padding: 1rem;
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .form-logo {
+    max-height: 150px;
+  }
+  
+  .form-section {
+    padding: 1rem;
+  }
 }

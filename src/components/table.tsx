@@ -550,7 +550,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           <button 
             className="pagination-button next" 
             onClick={goToNextPage}
-            disabled={page === totalPages}
+            disabled={page === totalPages || totalPages === 0}
           >
             Next
           </button>
