@@ -127,7 +127,7 @@
   border: 1px solid #E5E7EB;
 }
 
-.data-table th:not(:nth-child(7)):not(:nth-child(8)):not(:nth-child(9))::after {
+.data-table th::after {
   content: "↕";
   position: absolute;
   right: 0.5rem;
@@ -145,6 +145,11 @@
   content: "↓";
   opacity: 1;
   color: #374151;
+}
+
+.data-table th.unsortable::after {
+  cursor: default !important;
+  content: "" !important;
 }
 
 .data-table th:hover {

@@ -1,6 +1,5 @@
 import Navbar from "../../components/navbar";
 import "../styles/layout.css";
-import "../styles/finished.css";
 import TableWrapper from "@/components/tableWrapper";
 
 export default function FinishedPage() {

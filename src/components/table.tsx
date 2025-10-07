@@ -90,13 +90,20 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   
   // Sort submissions when sortColumn or sortDirection changes
   const sortedSubmissions = [...submissions].sort((a, b) => {
-    const aValue = a[sortColumn as keyof Submission] || '';
-    const bValue = b[sortColumn as keyof Submission] || '';
-    
-    if (aValue === bValue) return 0;
-    
-    const comparison = aValue < bValue ? -1 : 1;
-    return sortDirection === 'asc' ? comparison : -comparison;
+    if (sortColumn === 'time') {
+      // Sort by submission_time as Date
+      const aTime = new Date(a.submission_time).getTime();
+      const bTime = new Date(b.submission_time).getTime();
+      if (aTime === bTime) return 0;
+      const comparison = aTime < bTime ? -1 : 1;
+      return sortDirection === 'asc' ? comparison : -comparison;
+    } else {
+      const aValue = a[sortColumn as keyof Submission] || '';
+      const bValue = b[sortColumn as keyof Submission] || '';
+      if (aValue === bValue) return 0;
+      const comparison = aValue < bValue ? -1 : 1;
+      return sortDirection === 'asc' ? comparison : -comparison;
+    }
   });
   
   const handleSort = (column: string) => {
@@ -341,15 +348,15 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
         <table className="data-table">
           <thead>
             <tr>
-              <th className={getSortClass("no")} onClick={() => handleSort("no")}>No</th>
+              <th className={getSortClass("no") + "unsortable"}>No</th>
               <th className={getSortClass("time")} onClick={() => handleSort("time")}>Submission Time</th>
               <th className={getSortClass("nama")} onClick={() => handleSort("nama")}>Nama</th>
               <th className={getSortClass("toko")} onClick={() => handleSort("toko")}>Nama Toko</th>
               <th className={getSortClass("alamat")} onClick={() => handleSort("alamat")}>Alamat</th>
               <th className={getSortClass("email")} onClick={() => handleSort("email")}>Email</th>
-              <th className={getSortClass("telepon")} onClick={() => handleSort("telepon")}>Telepon</th>
-              <th className={getSortClass("status")} onClick={() => handleSort("status")}>Status</th>
-              <th className={getSortClass("video")} onClick={() => handleSort("video")}>Video</th>
+              <th className={getSortClass("telepon") + "unsortable"}>Telepon</th>
+              <th className={getSortClass("status") + "unsortable"}>Status</th>
+              <th className={getSortClass("video") + "unsortable"}>Video</th>
             </tr>
           </thead>
           <tbody>
