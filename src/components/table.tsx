@@ -26,19 +26,20 @@ interface DataTableProps {
 
 export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   // const router = useRouter();
-  const [sortColumn, setSortColumn] = useState("submission_time");
-  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortColumn, setSortColumn] = useState("time");
+  const [sortDirection, setSortDirection] = useState("asc");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
-  const [uploadingId, setUploadingId] = useState<number | null>(null);
+  // const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rowSpan, setRowSpan] = useState(10);
   const [page, setPage] = useState(1);
   const [rowStart, setRowStart] = useState(0);
+  const [uploadProgressList, setUploadProgressList] = useState<{ id: number, progress: number, uploading: boolean }[]>([]);
   
   const totalEntries = submissions.length;
   const totalPages = Math.ceil(totalEntries / rowSpan);
@@ -64,6 +65,14 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
       
       const data = await response.json();
       setSubmissions(data.submissions || []);
+      // Initialize uploadProgressList with id, progress: 0, uploading: false for each submission
+      setUploadProgressList(
+        (data.submissions || []).map((s: { id: number }) => ({
+          id: s.id,
+          progress: 0,
+          uploading: false
+        }))
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
       console.error('Error fetching submissions:', err);
@@ -199,33 +208,47 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
 
   // Handle upload video
   const handleUploadVideo = (submissionId: number) => {
-    setUploadingId(submissionId);
     // Trigger file input click
     if (fileInputRef.current) {
+      fileInputRef.current.onchange = (e) => {
+        const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
+        handleFileSelect(event, submissionId);
+      };
       fileInputRef.current.click();
     }
   };
 
   // Handle file selection
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>, submissionId: number) => {
     const file = event.target.files?.[0];
-    if (!file || !uploadingId) {
-      setUploadingId(null);
+
+    console.log(submissionId);
+
+    setUploadProgressList(prevList => 
+      prevList.map(p => p.id === submissionId ? { ...p, uploading: true } : p)
+    );
+    
+    if (!file) {
+      setUploadProgressList(prevList => 
+        prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+      );
       return;
     }
 
     // Check if file is a video
     if (!file.type.startsWith('video/')) {
       alert('Please select a video file');
-      setUploadingId(null);
+      setUploadProgressList(prevList => 
+        prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+      );
       return;
     }
 
-    setActionLoading(uploadingId);
+    setActionLoading(submissionId);
     setUploadProgress(0);
 
     try {
-      const storageRef = ref(storage, `videos/${uploadingId}/${file.name}`);
+      const storageRef = ref(storage, `videos/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
@@ -234,7 +257,10 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           const percent = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          setUploadProgress(percent);
+          // setUploadProgress(percent);
+          setUploadProgressList(prevList => 
+            prevList.map(p => p.id === submissionId ? { ...p, progress: percent } : p)
+          );
           
           // When upload reaches 100%, set processing state to true
           if (percent === 100) {
@@ -245,14 +271,16 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           console.error("Upload failed:", error);
           alert('Upload failed: ' + error.message);
           setActionLoading(null);
-          setUploadingId(null);
+          setUploadProgressList(prevList => 
+            prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+          );
         },
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             
             // Update submission with video URL
-            const response = await fetch(`/api/submissions/${uploadingId}`, {
+            const response = await fetch(`/api/submissions/${submissionId}`, {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
@@ -265,20 +293,22 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
             }
             
             // Update the submission in the local state
-            setSubmissions(submissions.map(submission => 
-              submission.id === uploadingId ? { ...submission, status: 'finished', video_url: url } : submission
-            ));
+            setSubmissions(prevSubmissions =>
+              prevSubmissions.filter(submission => submission.id !== submissionId)
+            );
 
             // alert('Video uploaded successfully');
             
             // Refresh the data after successful upload
-            fetchSubmissions();
+            // fetchSubmissions();
           } catch (error) {
             console.error('Error updating submission:', error);
             alert('Failed to update submission with video URL');
           } finally {
             setActionLoading(null);
-            setUploadingId(null);
+            setUploadProgressList(prevList => 
+              prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+            );
             setUploadProgress(0);
             setIsProcessing(false);
             // Reset file input
@@ -292,7 +322,9 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
       console.error('Error starting upload:', error);
       alert('Error starting upload');
       setActionLoading(null);
-      setUploadingId(null);
+      setUploadProgressList(prevList => 
+        prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+      );
     }
   };
 
@@ -320,30 +352,29 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
         <input
           type="file"
           ref={fileInputRef}
-          onChange={handleFileSelect}
           style={{ display: 'none' }}
           accept="video/*"
         />
         
         {/* Upload progress indicator */}
-        {uploadingId !== null && uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="upload-progress">
+        {/* {uploadingId !== null && uploadProgress > 0 && uploadProgress < 100 && ( */}
+          {/* <div className="upload-progress">
             <div className="progress-bar">
               <div className="progress-fill" style={{ width: `${uploadProgress}%` }}></div>
             </div>
             <div className="progress-text">Uploading: {uploadProgress}%</div>
-          </div>
-        )}
+          </div> */}
+        {/* )} */}
         
         {/* Processing indicator (circular loader) */}
-        {uploadingId !== null && isProcessing && (
-          <div className="upload-progress">
+        {/* {uploadingId !== null && isProcessing && ( */}
+          {/* <div className="upload-progress">
             <div className="circular-loader">
               <div className="spinner"></div>
               <div className="circular-loader-text">Processing video...</div>
             </div>
-          </div>
-        )}
+          </div> */}
+        {/* )} */}
         
         <table className="data-table">
           <thead>
@@ -401,14 +432,24 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
                         Open
                       </a>
                     ) : (
-                      <button 
-                        className="action-btn upload-btn"
-                        onClick={() => handleUploadVideo(submission.id)}
-                        disabled={actionLoading === submission.id}
-                      >
-                        <FontAwesomeIcon icon={faUpload} />
-                        Upload
-                      </button>
+                      !uploadProgressList.find(p => p.id === submission.id)?.uploading ? (
+                        <button 
+                          className="action-btn upload-btn"
+                          onClick={() => handleUploadVideo(submission.id)}
+                          disabled={actionLoading === submission.id}
+                        >
+                          <FontAwesomeIcon icon={faUpload} />
+                          Upload
+                        </button>
+                      ) : (
+                        <div className="action-btn uploading-btn">
+                          <span className="uploading-btn-fill" style={{ width: `${uploadProgressList.find(p => p.id === submission.id)?.progress ?? 0}%` }} />
+                          <div className="uploading-btn-text">
+                            <div className="spinner"></div>
+                            Uploading
+                          </div>
+                        </div>
+                      )
                     )}
                   </td>
                 </tr>
