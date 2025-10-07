@@ -4,12 +4,15 @@ import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "../styles/layout.css";
 import "../styles/login.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e: FormEvent) => {
@@ -49,6 +52,10 @@ export default function LoginPage() {
         } else if (name === "password") {
             setPassword(value);
         }
+    }
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     }
 
     // Check if user is already authenticated and redirect to homepage
@@ -113,16 +120,19 @@ export default function LoginPage() {
 
                                         <div className="form-group">
                                             <label htmlFor="password" className="form-label required-field">Password</label>
-                                            <input
-                                                type="password"
-                                                id="password"
-                                                name="password"
-                                                className="form-input"
-                                                value={password}
-                                                onChange={handleInputChange}
-                                                placeholder="Enter your password"
-                                                required
-                                            />
+                                            <div className="password-input-wrapper">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    id="password"
+                                                    name="password"
+                                                    className="form-input"
+                                                    value={password}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Enter your password"
+                                                    required
+                                                />
+                                                <FontAwesomeIcon className="password-toggle-btn" onClick={togglePasswordVisibility} icon={showPassword ? faEyeSlash : faEye} />
+                                            </div>
                                         </div>
                                         
                                         <div className="form-buttons">

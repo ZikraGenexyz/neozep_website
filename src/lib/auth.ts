@@ -1,7 +1,4 @@
 import { cookies } from 'next/headers';
-import { verify } from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export interface AuthUser {
   id: number;
@@ -11,20 +8,21 @@ export interface AuthUser {
 
 export async function getAuthUser(): Promise<AuthUser | null> {
   try {
-    const token = cookies().get('auth_token')?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth_token')?.value;
     
-    if (!token) {
+    if (!token || token !== 'authenticated') {
       return null;
     }
     
-    const decoded = verify(token, JWT_SECRET) as any;
-    
+    // For now, return a basic user object since we're using simple session cookies
+    // In a real app, you'd decode the token or fetch user data from database
     return {
-      id: decoded.id,
-      username: decoded.username,
-      isAdmin: decoded.isAdmin
+      id: 1,
+      username: 'admin',
+      isAdmin: true
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

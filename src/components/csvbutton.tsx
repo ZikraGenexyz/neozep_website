@@ -51,7 +51,6 @@ export default function CSVDownloader({ status, className = "download-csv-button
     };
 
     fetchSubmissions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   // Function to download submissions as CSV
