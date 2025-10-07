@@ -1,10 +1,11 @@
-.table-wrapper-container {
+/* Code Table Specific Styles - Scoped to prevent conflicts with regular table */
+.code-table-wrapper-container {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.table-wrapper {
+.code-table-wrapper {
   width: 100%;
   max-width: 100%;
   margin-bottom: 1rem;
@@ -13,14 +14,14 @@
   overflow-x: auto;
 }
 
-.table-wrapper-header {
+.code-table-wrapper-header {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.table-entries-dropdown {
+.code-table-entries-dropdown {
   font-size: 1rem;
   font-weight: 400;
   color: var(--text);
@@ -30,81 +31,59 @@
   margin: 0 0.25rem;
 }
 
-.data-table {
+.code-data-table {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid #E5E7EB;
 }
 
-.data-table thead {
+.code-data-table thead {
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
-.data-table tbody {
+.code-data-table tbody {
   display: block;
   max-height: 43vh;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
 }
-.data-table tbody::-webkit-scrollbar {
+.code-data-table tbody::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
 
-.data-table thead, .data-table tbody tr {
+.code-data-table thead, .code-data-table tbody tr {
   display: table;
   width: 100%;
   table-layout: fixed;
 }
 
-/* Column width adjustments */
-.data-table th:nth-child(1), .data-table td:nth-child(1) { /* No column */
-  width: 4rem;
+/* Column width adjustments for code table */
+.code-data-table th:nth-child(1), .code-data-table td:nth-child(1) { /* No column */
+  width: 2rem;
   min-width: 50px;
   text-align: center;
 }
 
-.data-table th:nth-child(2), .data-table td:nth-child(2) { /* Submission Time */
-  width: 15rem;
-  min-width: 150px;
-}
-
-.data-table th:nth-child(3), .data-table td:nth-child(3), /* Nama */
-.data-table th:nth-child(4), .data-table td:nth-child(4) { /* Nama Toko */
-  width: 10rem;
-  min-width: 120px;
-}
-
-.data-table th:nth-child(5), .data-table td:nth-child(5) { /* Alamat */
-  width: 18rem;
-  min-width: 180px;
-}
-
-.data-table th:nth-child(6), .data-table td:nth-child(6) { /* Email */
-  width: 15rem;
-  min-width: 150px;
-}
-
-.data-table th:nth-child(7), .data-table td:nth-child(7) { /* Telepon */
-  width: 10rem;
-  min-width: 120px;
-}
-
-.data-table th:nth-child(8), .data-table td:nth-child(8), /* Status */
-.data-table th:nth-child(9), .data-table td:nth-child(9), /* Video */
-.data-table th:nth-child(10), .data-table td:nth-child(10) { /* Action */
+.code-data-table th:nth-child(2), .code-data-table td:nth-child(2) { /* Created At */
   width: 10rem;
   min-width: 100px;
   text-align: center;
 }
 
-.data-table thead th {
+.code-data-table th:nth-child(3), .code-data-table td:nth-child(3) { /* Unique Code */
+  width: 16rem;
+  min-width: 160px;
   text-align: center;
 }
 
-.data-table th, .data-table td {
+.code-data-table thead th {
+  text-align: center;
+}
+
+.code-data-table th, .code-data-table td {
   padding: 0.75rem 1rem;
   text-align: left;
   border-bottom: 1px solid #E5E7EB;
@@ -118,7 +97,7 @@
   vertical-align: middle;
 }
 
-.data-table th {
+.code-data-table th {
   background-color: #F9FAFB;
   font-weight: 600;
   color: var(--text);
@@ -128,7 +107,7 @@
   border: 1px solid #E5E7EB;
 }
 
-.data-table th::after {
+.code-data-table th::after {
   content: "↕";
   position: absolute;
   right: 0.5rem;
@@ -136,48 +115,48 @@
   opacity: 0.5;
 }
 
-.data-table th.sort-asc::after {
+.code-data-table th.sort-asc::after {
   content: "↑";
   opacity: 1;
   color: #374151;
 }
 
-.data-table th.sort-desc::after {
+.code-data-table th.sort-desc::after {
   content: "↓";
   opacity: 1;
   color: #374151;
 }
 
-.data-table th.unsortable::after {
+.code-data-table th.unsortable::after {
   cursor: default !important;
   content: "" !important;
 }
 
-.data-table th.unsortable {
+.code-data-table th.unsortable {
   padding: 12px 16px;
 }
 
-.data-table th:hover {
+.code-data-table th:hover {
   background-color: #F3F4F6;
 }
 
-.data-table tbody tr:hover {
+.code-data-table tbody tr:hover {
   background-color: #F9FAFB;
 }
 
-.data-table .no-data,
-.data-table .loading,
-.data-table .error {
+.code-data-table .no-data,
+.code-data-table .loading,
+.code-data-table .error {
   text-align: center;
   padding: 2rem;
   color: #6B7280;
 }
 
-.data-table .error {
+.code-data-table .error {
   color: #B91C1C;
 }
 
-.status-badge {
+.code-status-badge {
   display: inline-block;
   padding: 0.25rem 1rem;
   border-radius: 9999px;
@@ -186,22 +165,22 @@
   text-transform: capitalize;
 }
 
-.status-pending {
+.code-status-pending {
   background-color: #FEF3C7;
   color: #9b7c00 !important;
 }
 
-.status-finished {
+.code-status-finished {
   background-color: #D1FAE5;
   color: #065F46 !important;
 }
 
-.status-dropdown {
+.code-status-dropdown {
   position: relative;
   display: inline-block;
 }
 
-.status-dropdown-content {
+.code-status-dropdown-content {
   display: none;
   position: absolute;
   bottom: 100%;
@@ -214,11 +193,11 @@
   overflow: hidden;
 }
 
-.status-dropdown:hover .status-dropdown-content {
+.code-status-dropdown:hover .code-status-dropdown-content {
   display: block;
 }
 
-.dropdown-item {
+.code-dropdown-item {
   display: block;
   width: 100%;
   padding: 0.5rem;
@@ -229,16 +208,16 @@
   font-size: 0.875rem;
 }
 
-.dropdown-item:hover {
+.code-dropdown-item:hover {
   background-color: #F3F4F6;
 }
 
-.dropdown-item.active {
+.code-dropdown-item.active {
   background-color: #F3F4F6;
   font-weight: 600;
 }
 
-.action-btn {
+.code-action-btn {
   padding: 0.6rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.9rem;
@@ -251,36 +230,36 @@
   flex-direction: row;
 }
 
-.action-btn svg {
+.code-action-btn svg {
   width: 0.8rem;
   height: 0.8rem;
 }
 
-.action-btn:disabled {
+.code-action-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.edit-btn {
+.code-edit-btn {
   background-color: #DBEAFE;
   color: #1E40AF;
 }
 
-.edit-btn:hover:not(:disabled) {
+.code-edit-btn:hover:not(:disabled) {
   background-color: #BFDBFE;
 }
 
-.delete-btn {
+.code-delete-btn {
   background-color: #FEE2E2;
   color: #B91C1C;
   margin: 0;
 }
 
-.delete-btn:hover:not(:disabled) {
+.code-delete-btn:hover:not(:disabled) {
   background-color: #FECACA;
 }
 
-.upload-btn {
+.code-upload-btn {
   background-color: #3c64dc;
   color: #FFFFFF;
   display: flex;
@@ -289,11 +268,11 @@
   gap: 0.5em;
 }
 
-.upload-btn:hover:not(:disabled) {
+.code-upload-btn:hover:not(:disabled) {
   background-color: #2047b9;
 }
 
-.play-btn {
+.code-play-btn {
   background-color: #10B981;
   color: #FFFFFF;
   display: flex;
@@ -302,11 +281,11 @@
   gap: 0.5em;
 }
 
-.play-btn:hover:not(:disabled) {
+.code-play-btn:hover:not(:disabled) {
   background-color: #059669;
 }
 
-.uploading-btn {
+.code-uploading-btn {
   background-color: #10b9817b;
   display: flex;
   align-items: center;
@@ -316,7 +295,7 @@
   overflow: hidden;
 }
 
-.uploading-btn-fill {
+.code-uploading-btn-fill {
   position: absolute;
   left: 0;
   top: 0;
@@ -326,7 +305,7 @@
   transition: width 0.3s ease;
 }
 
-.uploading-btn-text {
+.code-uploading-btn-text {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,27 +316,27 @@
   color: #FFFFFF;
 }
 
-.action-buttons {
+.code-action-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.action-buttons .upload-btn {
+.code-action-buttons .code-upload-btn {
   margin-bottom: 0;
 }
 
-.video-link {
+.code-video-link {
   color: #2563EB;
   text-decoration: none;
 }
 
-.video-link:hover {
+.code-video-link:hover {
   text-decoration: underline;
 }
 
-/* Upload progress styles */
-.upload-progress {
+/* Upload progress styles for code table */
+.code-upload-progress {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -369,7 +348,7 @@
   width: 300px;
 }
 
-.progress-bar {
+.code-progress-bar {
   height: 10px;
   background-color: #e0e0e0;
   border-radius: 5px;
@@ -377,7 +356,7 @@
   margin-bottom: 8px;
 }
 
-.progress-fill {
+.code-progress-fill {
   height: 100%;
   background-color: var(--green);
   border-radius: 5px;
@@ -385,14 +364,14 @@
   transition: width 0.3s ease;
 }
 
-.progress-text {
+.code-progress-text {
   font-size: 14px;
   text-align: center;
   color: #333;
 }
 
-/* Circular loader styles */
-.circular-loader {
+/* Circular loader styles for code table */
+.code-circular-loader {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -400,28 +379,28 @@
   padding: 10px 0;
 }
 
-.circular-loader-text {
+.code-circular-loader-text {
   margin-top: 10px;
   font-size: 14px;
   color: #333;
 }
 
-.spinner {
+.code-spinner {
   width: 16px;
   height: 16px;
   border: 3px solid rgba(255, 255, 255, 0.294);
   border-radius: 50%;
   border-top-color: #FFFFFF;
-  animation: spin 1s ease-in-out infinite;
+  animation: code-spin 1s ease-in-out infinite;
 }
 
-@keyframes spin {
+@keyframes code-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-.video-link-container {
+.code-video-link-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,8 +413,8 @@
   transition: background-color 0.3s ease;
 }
 
-/* Pagination styles */
-.table-footer {
+/* Pagination styles for code table */
+.code-table-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -444,13 +423,13 @@
   gap: 1rem;
 }
 
-.pagination {
+.code-pagination {
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
-.pagination-button {
+.code-pagination-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -467,29 +446,29 @@
   transition: all 0.2s ease;
 }
 
-.pagination-button:hover:not(:disabled):not(.active) {
+.code-pagination-button:hover:not(:disabled):not(.active) {
   background-color: #F3F4F6;
   border-color: #D1D5DB;
 }
 
-.pagination-button.active {
+.code-pagination-button.active {
   background-color: #3B82F6;
   border-color: #3B82F6;
   color: #FFFFFF;
   cursor: default;
 }
 
-.pagination-button:disabled {
+.code-pagination-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.pagination-button.prev,
-.pagination-button.next {
+.code-pagination-button.prev,
+.code-pagination-button.next {
   padding: 0 1rem;
 }
 
-.pagination-ellipsis {
+.code-pagination-ellipsis {
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -4,7 +4,7 @@ import './navbar.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHourglass, faCheck, faChevronLeft, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHourglass, faCheck, faChevronLeft, faSignOutAlt, faKey } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -33,6 +33,10 @@ export default function Navbar() {
       } else if (path === "/finished") {
         // Do something if needed, e.g., return true or set state
         document.querySelector('.nav-link.finished')?.classList.add('active');
+        return true;
+      } else if (path === "/unique-code") {
+        // Do something if needed, e.g., return true or set state
+        document.querySelector('.nav-link.unique-code')?.classList.add('active');
         return true;
       }
     }
@@ -85,6 +89,11 @@ export default function Navbar() {
         <li>
           <Link href="/finished" className="nav-link finished">
             <FontAwesomeIcon icon={faCheck} className="icon-fa" /> Finished
+          </Link>
+        </li>
+        <li>
+          <Link href="/unique-code" className="nav-link unique-code">
+            <FontAwesomeIcon icon={faKey} className="icon-fa" /> Unique Code
           </Link>
         </li>
       </ul>

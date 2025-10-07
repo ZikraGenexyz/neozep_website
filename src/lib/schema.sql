@@ -33,3 +33,22 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Create index on username for faster lookups
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+
+-- Create unique_codes table for tracking unique codes
+CREATE TABLE IF NOT EXISTS unique_codes (
+  id SERIAL PRIMARY KEY,
+  code VARCHAR(50) NOT NULL UNIQUE,
+  is_used BOOLEAN DEFAULT FALSE,
+  submission_id INTEGER REFERENCES submissions(id) ON DELETE SET NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  used_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Create index on code for faster lookups
+CREATE INDEX IF NOT EXISTS idx_unique_codes_code ON unique_codes(code);
+
+-- Create index on is_used for filtering
+CREATE INDEX IF NOT EXISTS idx_unique_codes_used ON unique_codes(is_used);
+
+-- Create index on submission_id for foreign key lookups
+CREATE INDEX IF NOT EXISTS idx_unique_codes_submission ON unique_codes(submission_id);

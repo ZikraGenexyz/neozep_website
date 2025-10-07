@@ -2,6 +2,7 @@
   "name": "neozep_website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack -H 0.0.0.0",
     "build": "next build --turbopack",
@@ -10,7 +11,8 @@
     "init-db": "node scripts/init-db.js",
     "seed-db": "node scripts/seed-db.js",
     "test-api": "node scripts/test-api.js",
-    "create-admin": "node scripts/create-admin.js"
+    "create-admin": "node scripts/create-admin.js",
+    "generate-codes": "node scripts/generate-unique-codes.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
