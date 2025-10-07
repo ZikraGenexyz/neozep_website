@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "../styles/layout.css";
 import "../styles/form.css";
@@ -14,7 +14,9 @@ export default function FormPage() {
     namaToko: "",
     alamat: "",
     email: "",
-    telepon: ""
+    telepon: "",
+    kecamatan: "",
+    kelurahan: ""
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,7 +41,9 @@ export default function FormPage() {
         nama_toko: formData.namaToko,
         alamat: formData.alamat,
         email: formData.email,
-        telepon: formData.telepon
+        telepon: formData.telepon,
+        kecamatan: formData.kecamatan,
+        kelurahan: formData.kelurahan
       };
       
       const response = await fetch('/api/submissions', {
@@ -47,7 +51,7 @@ export default function FormPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(submissionData),
+        body: JSON.stringify({...submissionData, alamat: formData.alamat + ", Kelurahan " + formData.kelurahan + ", Kecamatan " + formData.kecamatan}),
       });
       
       if (!response.ok) {
@@ -61,7 +65,9 @@ export default function FormPage() {
         namaToko: "",
         alamat: "",
         email: "",
-        telepon: ""
+        telepon: "",
+        kecamatan: "",
+        kelurahan: ""
       });
       
       // Show success message and redirect
@@ -77,9 +83,9 @@ export default function FormPage() {
 
   return (
     <div className="main-container">
-      <div className="content-wrapper">
+      <div className="content-wrapper" style={{ maxWidth: '100vw !important' }}>
         <main className="main-content">
-          <h1 className="header-title">Submit Form</h1>
+          <h1 className="header-title" style={{ display: 'flex', justifyContent: 'center' }}>Neozep Form</h1>
           
           <div className="form-container">
             <form onSubmit={handleSubmit}>
@@ -119,6 +125,32 @@ export default function FormPage() {
                   onChange={handleInputChange}
                   required
                 ></textarea>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="kecamatan" className="form-label required-field">Kecamatan</label>
+                <input
+                  type="text"
+                  id="kecamatan"
+                  name="kecamatan"
+                  className="form-input"
+                  value={formData.kecamatan}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="kelurahan" className="form-label required-field">Kelurahan</label>
+                <input
+                  type="text"
+                  id="kelurahan"
+                  name="kelurahan"
+                  className="form-input"
+                  value={formData.kelurahan}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
               
               <div className="form-group">

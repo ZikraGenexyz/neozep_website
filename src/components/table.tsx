@@ -27,7 +27,7 @@ interface DataTableProps {
 export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   // const router = useRouter();
   const [sortColumn, setSortColumn] = useState("time");
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -208,12 +208,19 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
 
   // Handle upload video
   const handleUploadVideo = (submissionId: number) => {
-    // Trigger file input click
+    // Reset file input first
     if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      
+      // Remove previous event listener before adding a new one
+      fileInputRef.current.onchange = null;
+      
+      // Set new event handler
       fileInputRef.current.onchange = (e) => {
         const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
         handleFileSelect(event, submissionId);
       };
+      
       fileInputRef.current.click();
     }
   };
@@ -248,7 +255,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
     setUploadProgress(0);
 
     try {
-      const storageRef = ref(storage, `videos/${file.name}`);
+      const storageRef = ref(storage, `videos/${submissionId}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
@@ -307,13 +314,15 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           } finally {
             setActionLoading(null);
             setUploadProgressList(prevList => 
-              prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+              prevList.map(p => p.id === submissionId ? { ...p, uploading: false, progress: 0 } : p)
             );
             setUploadProgress(0);
             setIsProcessing(false);
+            
             // Reset file input
             if (fileInputRef.current) {
               fileInputRef.current.value = '';
+              fileInputRef.current.onchange = null;  // Also clear the event handler
             }
           }
         }
