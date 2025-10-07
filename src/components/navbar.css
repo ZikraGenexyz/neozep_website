@@ -5,14 +5,14 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
 }
 
 .navbar.hidden {
   width: 8vw; /* w-64 */
   align-items: center;
   padding: 1.5rem 0.5rem;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
 }
 
 .navbar.hidden .nav-link svg {
@@ -83,6 +83,7 @@
   color: #ffffff9d;
   font-size: 14px;
   padding: 0.5rem;
+  cursor: pointer;
 }
 
 .nav-link.active {
@@ -161,4 +162,46 @@
     margin-right: 0;
     opacity: 0.75;
     transition: transform 0.3s ease, rotate 0.5s ease;
+}
+
+/* Logout section styles */
+.logout-section {
+  margin-top: auto;
+  margin-bottom: 1rem;
+}
+
+.logout-btn {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.logout-btn .icon-fa {
+  margin-right: 0;
+  width: 1rem;
+}
+
+.navbar.hidden .logout-btn {
+  padding: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.navbar.hidden .logout-btn span {
+  display: none;
 }

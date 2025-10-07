@@ -82,16 +82,17 @@ export default function FormPage() {
   };
 
   return (
-    <div className="main-container">
-      <div className="content-wrapper" style={{ maxWidth: '100vw !important' }}>
-        <main className="main-content">
-          <div className="form-page-layout">
-            <div className="form-logo-section">
-              <div className="form-logo-wrapper">
-                <img src="/neozep_logo.png" alt="Neozep Logo" className="form-logo" />
-                <span className="form-logo-text">SUBMISSION FORM</span>
+    <div className="form-page">
+      <div className="main-container">
+        <div className="content-wrapper" style={{ maxWidth: '100vw !important' }}>
+          <main className="main-content">
+            <div className="form-page-layout">
+              <div className="form-logo-section">
+                <div className="form-logo-wrapper">
+                  <img src="/neozep_logo.png" alt="Neozep Logo" className="form-logo" />
+                  <span className="form-logo-text">SUBMISSION FORM</span>
+                </div>
               </div>
-            </div>
               <div className="form-section">
                 {submitted ? (
                   <div className="form-success-container">
@@ -241,14 +242,15 @@ export default function FormPage() {
                   </div>
                 )}
               </div>
-          </div>
-        </main>
-        
-        {/* <footer className="footer">
-          <div className="footer-content">
-            &copy; {new Date().getFullYear()} Neozep. All rights reserved.
-          </div>
-        </footer> */}
+            </div>
+          </main>
+          
+          {/* <footer className="footer">
+            <div className="footer-content">
+              &copy; {new Date().getFullYear()} Neozep. All rights reserved.
+            </div>
+          </footer> */}
+        </div>
       </div>
     </div>
   );

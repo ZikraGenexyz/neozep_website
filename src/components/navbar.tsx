@@ -4,13 +4,25 @@ import './navbar.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHourglass, faCheck, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faHourglass, faCheck, faChevronLeft, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.cookie.includes('navbar_hidden=true');
+    }
+    return false;
+  });
+  const router = useRouter();
 
   const initialize = () => {
+    setTimeout(() => {
+      Array.from(document.getElementsByClassName('navbar')).forEach((el) => {
+        (el as HTMLElement).style.transition = 'all 0.3s ease';
+      });
+    }, 100);
     // Check if the current URL path is "/" or "/finished"
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
@@ -32,7 +44,25 @@ export default function Navbar() {
   });
 
   const handleToggle = () => {
+    document.cookie = "navbar_hidden=" + (!isHidden);
     setIsHidden(!isHidden);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        // Redirect to login page
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still redirect to login page even if logout fails
+      router.push('/login');
+    }
   };
 
   useEffect(() => {
@@ -59,10 +89,17 @@ export default function Navbar() {
         </li>
       </ul>
       <hr className="border" />
+      <ul className="nav-list">
+        <li>
+          <a onClick={handleLogout} className="nav-link logout">
+            <FontAwesomeIcon icon={faSignOutAlt} className="icon-fa" /> Logout
+          </a>
+        </li>
+      </ul>
+      <hr className="border" />
       <div className="close-button" onClick={handleToggle}>
         <FontAwesomeIcon icon={faChevronLeft} className="icon-fa" />
       </div>
     </nav>
   );
 }
-

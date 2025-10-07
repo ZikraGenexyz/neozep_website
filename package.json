@@ -9,13 +9,15 @@
     "lint": "eslint",
     "init-db": "node scripts/init-db.js",
     "seed-db": "node scripts/seed-db.js",
-    "test-api": "node scripts/test-api.js"
+    "test-api": "node scripts/test-api.js",
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
     "@neondatabase/serverless": "^1.0.2",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "firebase": "^12.3.0",
     "next": "15.5.4",
@@ -26,6 +28,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",

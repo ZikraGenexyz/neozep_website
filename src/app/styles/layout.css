@@ -1,10 +1,10 @@
-/* Main layout styles */
-.main-container {
+/* Scoped dashboard layout styles */
+.dashboard-page .main-container {
   display: flex;
   min-height: 100vh;
 }
 
-.content-wrapper {
+.dashboard-page .content-wrapper {
   max-width: 84vw;
   flex: 1;
   display: flex;
@@ -12,16 +12,16 @@
   transition: all 0.5s ease;
 }
 
-.content-wrapper.expanded {
+.dashboard-page .content-wrapper.expanded {
   max-width: 92vw;
 }
 
-.dark .header {
+.dashboard-page .dark .header {
   border-color: #374151;
   background-color: #111827;
 }
 
-.header-content {
+.dashboard-page .header-content {
   max-width: 80rem;
   margin: 0 auto;
   display: flex;
@@ -29,31 +29,31 @@
   justify-content: space-between;
 }
 
-.header-title {
+.dashboard-page .header-title {
   font-size: 2rem;
   font-weight: 600;
   color: #111827b3;
 }
 
-.dark .header-title {
+.dashboard-page .dark .header-title {
   color: #f9fafb;
 }
 
 /* Main content area */
-.main-content {
+.dashboard-page .main-content {
   flex: 1;
   padding: 2rem 2rem 0 2rem;
   background-color: var(--background);
 }
 
 /* Footer styles */
-.footer {
+.dashboard-page .footer {
   width: 100%;
   padding: 0 2rem 1.5rem 2rem;
   background-color: transparent;
 }
 
-.footer-content {
+.dashboard-page .footer-content {
   max-width: 80rem;
   margin: 0 auto;
   text-align: center;
@@ -61,11 +61,11 @@
   color: #6b7280;
 }
 
-.dark .footer-content {
+.dashboard-page .dark .footer-content {
   color: #9ca3af;
 }
 
-.table-container {
+.dashboard-page .table-container {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -78,7 +78,7 @@
   color: #111827;
 }
 
-.table-title-container {
+.dashboard-page .table-title-container {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -90,13 +90,13 @@
   align-items: center;
 }
 
-.table-title {
+.dashboard-page .table-title {
   font-size: 1.2rem;
   font-weight: 600;
   color: #111827;
 }
 
-.table-content {
+.dashboard-page .table-content {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -105,20 +105,20 @@
   padding: 1rem;
 }
 
-.table-content span {
+.dashboard-page .table-content span {
   font-size: 1rem;
   font-weight: 400;
   color: var(--text);
 }
 
-.table-title-buttons {
+.dashboard-page .table-title-buttons {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
 
-button {
+.dashboard-page button {
   display: flex;
   align-items: center;
   justify-content: center;
