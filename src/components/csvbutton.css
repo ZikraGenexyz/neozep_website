@@ -16,3 +16,17 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .download-csv-button span {
+    display: none;
+  }
+  
+  .download-csv-button {
+    height: 2.5rem;
+    width: 2.5rem;
+    padding: 0 !important;
+    justify-content: center;
+    align-items: center;
+  }
+}

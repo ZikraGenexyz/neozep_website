@@ -135,7 +135,7 @@ export default function CSVDownloader({ status, className = "download-csv-button
       disabled={loading || submissions.length === 0}
     >
       <FontAwesomeIcon icon={faDownload} />
-      Download CSV
+      <span>Download CSV</span>
     </button>
   );
 }

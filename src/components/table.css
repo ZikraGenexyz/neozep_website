@@ -498,3 +498,10 @@
   font-size: 1rem;
   color: #6B7280;
 }
+
+@media (max-width: 768px) {
+  .pagination {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -39,7 +39,7 @@ export default function RefreshButton({ className = "refresh-button", style, loa
       disabled={loading || isSpinning}
     >
       <FontAwesomeIcon icon={faRefresh} className="icon" />
-      Refresh
+      <span>Refresh</span>
     </button>
   );
 }

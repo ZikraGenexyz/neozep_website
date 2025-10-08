@@ -4,7 +4,7 @@
 }
 
 .refresh-button:disabled {
-opacity: 0.6;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -31,5 +31,19 @@ opacity: 0.6;
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .refresh-button span {
+    display: none;
+  }
+  
+  .refresh-button {
+    height: 2.5rem;
+    width: 2.5rem;
+    padding: 0 !important;
+    justify-content: center;
+    align-items: center;
   }
 }

@@ -32,7 +32,7 @@ export default function TableWrapper({ status }: TableWrapperProps) {
       <div className="table-title-container">
         <span className="table-title">{status === "pending" ? "Pending" : "Finished"} Submissions</span>
         <div className="table-title-buttons">
-          <CSVDownloader style={{ visibility: status === "pending" ? "hidden" : "visible" }} status={status} />
+          <CSVDownloader style={{ display: status === "pending" ? "none" : "block" }} status={status} />
           <RefreshButton loading={isRefreshing} onRefresh={handleRefresh} />
         </div>
       </div>

@@ -131,3 +131,23 @@
   gap: 0.5rem;
   outline: none;
 }
+
+@media (max-width: 768px) {
+  .main-content {
+    width: 100vw;
+  }
+
+  .dashboard-page .footer {
+    width: 100vw;
+  }
+  
+  /* .dashboard-page .table-title-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  } */
+
+  .table-title {
+    font-size: 1.25rem;
+  }
+}

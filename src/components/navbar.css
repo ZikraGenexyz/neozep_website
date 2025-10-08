@@ -214,3 +214,11 @@
 .navbar.hidden .logout-btn span {
   display: none;
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    width: 0;
+    padding: 0;
+    display: none;
+  }
+}
