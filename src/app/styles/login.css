@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  min-height: 80vh;
+  min-height: 100vh;
 }
 
 .login-page .main-content {
@@ -359,11 +359,20 @@
   .login-page .form-page-layout {
     flex-direction: column;
   }
+
+  .login-page .login-form {
+    width: 90%;
+  }
   
   .login-page .form-logo-section {
+    max-height: 16vh;
     padding: 1.5rem;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .login-page .form-logo-wrapper span {
+    display: none;
   }
   
   .login-page .form-logo {
@@ -374,6 +383,8 @@
   .login-page .form-section {
     padding: 1rem;
     align-items: center;
+    justify-content: start;
+    margin-top: 2rem;
   }
   
   .login-page .login-info-text {

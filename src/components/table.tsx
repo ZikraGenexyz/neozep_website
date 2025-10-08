@@ -17,6 +17,14 @@ interface Submission {
   telepon: string;
   status: 'pending' | 'finished' | 'rejected';
   video_url?: string;
+  unique_code?: {
+    id: number;
+    code: string;
+    is_used: boolean;
+    is_copied: boolean;
+    created_at: string;
+    used_at?: string;
+  };
 }
 
 interface DataTableProps {
@@ -53,12 +61,14 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   const fetchSubmissions = async () => {
     setLoading(true);
     try {
-      let url = '/api/submissions';
+      // Build URL with proper parameter handling
+      const url = new URL('/api/submissions', window.location.origin);
       if (status) {
-        url += `?status=${status}`;
+        url.searchParams.set('status', status);
       }
+      url.searchParams.set('withUniqueCode', 'true');
       
-      const response = await fetch(url);
+      const response = await fetch(url.toString());
       if (!response.ok) {
         throw new Error('Failed to fetch submissions');
       }
@@ -114,6 +124,33 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
       return sortDirection === 'asc' ? comparison : -comparison;
     }
   });
+
+  const sendVideoEmailLink = async (submissionId: number, videoUrl: string) => {
+    try {
+      // Get submission data
+      const submissionResponse = await fetch(`/api/submissions/${submissionId}`);
+      const submissionData = await submissionResponse.json();
+      
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: submissionData.submission.email,
+          subject: `Neozep Video Result - ${submissionData.submission.nama_toko}`,
+          videoUrl,
+          submissionId,
+          submissionData: submissionData.submission,
+          code: submissions.find(submission => submission.id === submissionId)?.unique_code?.code || '',
+        }),
+      });
+      
+      if (response.ok) {
+        console.log('Video email sent successfully');
+      }
+    } catch (error) {
+      console.error('Error sending video email:', error);
+    }
+  };
   
   const handleSort = (column: string) => {
     if (sortColumn === column) {
@@ -298,6 +335,8 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
             if (!response.ok) {
               throw new Error('Failed to update submission with video URL');
             }
+
+            sendVideoEmailLink(submissionId, url);
             
             // Update the submission in the local state
             setSubmissions(prevSubmissions =>

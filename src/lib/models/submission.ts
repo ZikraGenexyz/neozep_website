@@ -92,7 +92,25 @@ export async function getSubmissionsWithUniqueCodes(status?: string): Promise<Su
   // Transform the flat result into nested structure
   const submissionsMap = new Map<number, SubmissionWithUniqueCode>();
   
-  result.rows.forEach((row: any) => {
+  result.rows.forEach((row: {
+    id: number;
+    submission_time: Date;
+    nama: string;
+    nama_toko: string;
+    alamat: string;
+    email: string;
+    telepon: string;
+    status: string;
+    video_url?: string;
+    created_at: Date;
+    updated_at: Date;
+    unique_code_id?: number;
+    unique_code?: string;
+    unique_code_is_used?: boolean;
+    unique_code_is_copied?: boolean;
+    unique_code_created_at?: Date;
+    unique_code_used_at?: Date;
+  }) => {
     const submissionId = row.id;
     
     if (!submissionsMap.has(submissionId)) {
@@ -104,16 +122,16 @@ export async function getSubmissionsWithUniqueCodes(status?: string): Promise<Su
         alamat: row.alamat,
         email: row.email,
         telepon: row.telepon,
-        status: row.status,
+        status: row.status as 'pending' | 'finished' | 'rejected',
         video_url: row.video_url,
         created_at: row.created_at,
         updated_at: row.updated_at,
         unique_code: row.unique_code_id ? {
           id: row.unique_code_id,
-          code: row.unique_code,
-          is_used: row.unique_code_is_used,
-          is_copied: row.unique_code_is_copied,
-          created_at: row.unique_code_created_at,
+          code: row.unique_code || '',
+          is_used: row.unique_code_is_used || false,
+          is_copied: row.unique_code_is_copied || false,
+          created_at: row.unique_code_created_at || new Date(),
           used_at: row.unique_code_used_at
         } : undefined
       });
