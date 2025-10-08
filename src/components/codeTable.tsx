@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import "./codeTable.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 interface UniqueCode {
   id: number;
@@ -32,7 +34,7 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   const [page, setPage] = useState(1);
   const [rowStart, setRowStart] = useState(0);
   const [uploadProgressList, setUploadProgressList] = useState<{ id: number, progress: number, uploading: boolean }[]>([]);
-  
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const totalEntries = uniqueCodes.length;
   const totalPages = Math.ceil(totalEntries / rowSpan);
 
@@ -40,6 +42,40 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   useEffect(() => {
     setRowStart((page - 1) * rowSpan);
   }, [page, rowSpan]);
+
+  // Sort submissions when sortColumn or sortDirection changes
+  const sortedUniqueCodes = [...uniqueCodes].sort((a, b) => {
+    if (sortColumn === 'created_at') {
+      // Sort by submission_time as Date
+      const aTime = new Date(a.created_at).getTime();
+      const bTime = new Date(b.created_at).getTime();
+      if (aTime === bTime) return 0;
+      const comparison = aTime < bTime ? -1 : 1;
+      return sortDirection === 'asc' ? comparison : -comparison;
+    } else {
+      const aValue = a[sortColumn as keyof UniqueCode] || '';
+      const bValue = b[sortColumn as keyof UniqueCode] || '';
+      if (aValue === bValue) return 0;
+      const comparison = aValue < bValue ? -1 : 1;
+      return sortDirection === 'asc' ? comparison : -comparison;
+    }
+  });
+
+  const handleCopyLink = async (link: string) => {
+    try {
+      await navigator.clipboard.writeText(link);
+      setToastMessage('Link copied to clipboard!');
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 1000);
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+      setToastMessage('Failed to copy link');
+      setTimeout(() => setToastMessage(null), 3000);
+    }
+  };
 
   // Fetch unique codes from the API
   const fetchUniqueCodes = async () => {
@@ -184,7 +220,8 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
             <tr>
               <th className={getSortClass("no") + " unsortable"}>No</th>
               <th className={getSortClass("created_at")} onClick={() => handleSort("created_at")}>Created At</th>
-              <th className={getSortClass("code") + " unsortable"} onClick={() => handleSort("code")}>Unique Code</th>
+              <th className={getSortClass("code") + " unsortable"}>Unique Code</th>
+              <th className={getSortClass("link") + " unsortable"}>Form Link</th>
             </tr>
           </thead>
           <tbody>
@@ -201,11 +238,19 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
                 <td rowSpan={10} className="no-data">No data available in table</td>
               </tr>
             ) : (
-              uniqueCodes.slice(rowStart, rowStart + rowSpan).map((uniqueCode, index) => (
+              sortedUniqueCodes.slice(rowStart, rowStart + rowSpan).map((uniqueCode, index) => (
                 <tr key={uniqueCode.id}>
                   <td>{rowStart + index + 1}</td>
                   <td>{new Date(uniqueCode.created_at).toLocaleString()}</td>
                   <td>{uniqueCode.code}</td>
+                  <td>
+                    <div className="code-table-link-container">
+                      {window.location.origin}/form/{uniqueCode.code}
+                      <div className="code-copy-icon-container">
+                        <FontAwesomeIcon icon={faCopy} onClick={() => handleCopyLink(`${window.location.origin}/form/${uniqueCode.code}`)} />
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               ))
             )}
@@ -301,6 +346,9 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
           </button>
         </div>
       </div>
+      {toastMessage && 
+        <div className="code-toast-message">{toastMessage}</div>
+      }
     </div>
   );
 }

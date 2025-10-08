@@ -33,6 +33,7 @@
 
 .code-data-table {
   width: 100%;
+  min-width: 50rem;
   border-collapse: collapse;
   border: 1px solid #E5E7EB;
 }
@@ -45,7 +46,7 @@
 
 .code-data-table tbody {
   display: block;
-  max-height: 43vh;
+  max-height: 40vh;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
@@ -62,20 +63,26 @@
 
 /* Column width adjustments for code table */
 .code-data-table th:nth-child(1), .code-data-table td:nth-child(1) { /* No column */
-  width: 2rem;
+  width: 4rem;
   min-width: 50px;
   text-align: center;
 }
 
 .code-data-table th:nth-child(2), .code-data-table td:nth-child(2) { /* Created At */
-  width: 10rem;
+  width: 15rem;
   min-width: 100px;
   text-align: center;
 }
 
 .code-data-table th:nth-child(3), .code-data-table td:nth-child(3) { /* Unique Code */
-  width: 16rem;
-  min-width: 160px;
+  width: 20rem;
+  min-width: 200px;
+  text-align: center;
+}
+
+.code-data-table th:nth-child(4), .code-data-table td:nth-child(4) { /* Link */
+  width: 35rem;
+  min-width: 200px;
   text-align: center;
 }
 
@@ -476,4 +483,55 @@
   height: 2.5rem;
   font-size: 1rem;
   color: #6B7280;
+}
+
+.code-table-link-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.code-copy-icon-container {
+  cursor: pointer;
+  background-color: #dadadacb;
+  border-radius: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.code-copy-icon-container:hover {
+  background-color: #b4b4b4cb;
+}
+
+.code-copy-icon-container svg {
+  color: var(--text);
+}
+
+.code-toast-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #10B981;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

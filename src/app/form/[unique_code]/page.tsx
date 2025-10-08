@@ -221,27 +221,7 @@ export default function FormWithUniqueCodePage() {
                       </svg>
                     </div>
                     <h2 className="form-success-title">Thank You!</h2>
-                    <p className="form-success-message">Your submission has been received successfully.</p>
-                    <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '1rem' }}>
-                      Your access code <strong>{uniqueCode}</strong> has been marked as used.
-                    </p>
-                    <button 
-                      className="form-submit-btn" 
-                      onClick={() => {
-                        setSubmitted(false);
-                        setFormData({
-                          nama: "",
-                          namaToko: "",
-                          alamat: "",
-                          email: "",
-                          telepon: "",
-                          kecamatan: "",
-                          kelurahan: ""
-                        });
-                      }}
-                    >
-                      Submit Another
-                    </button>
+                    <p className="form-success-message">Your submission has been received successfully. <br />Result will be sent to your email in 2x24 hours.</p>
                   </div>
                 ) : (
                   <div className="form-container">
