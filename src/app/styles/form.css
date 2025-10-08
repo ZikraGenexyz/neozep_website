@@ -23,6 +23,7 @@
 
 .form-page .form-logo {
   width: 25vw;
+  margin-bottom: 0.25rem;
   object-fit: contain;
   filter: brightness(0) invert();
 }
@@ -33,26 +34,26 @@
   font-weight: 700;
   width: 100%;
   text-align: left;
+  line-height: 1;
 }
 
 .form-page .form-section {
   flex: 1.5;
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  align-items: center;
-  justify-content: center;
+  padding: 4rem 6rem;
   background-color: var(--background);
   max-height: 100vh;
   height: 100vh;
+  width: 100%;
   overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-page .form-container {
-  background-color: var(--background);
-  border-radius: 0.75rem;
-  width: 100%;
-  padding: 2rem;
+  background-color: transparent;
+  margin: auto;
+  width: 100%
 }
 
 .form-page .form-title-container {
@@ -201,7 +202,7 @@
   text-align: center;
   padding: 2rem;
   max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .form-page .form-success-check {
@@ -259,19 +260,31 @@
   .form-page .form-page-layout {
     flex-direction: column;
   }
+
+  .form-page .form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
   
   .form-page .form-logo-section {
-    padding: 1rem;
+    padding: 2rem 0;
     border-right: none;
     border-bottom: 1px solid #e9ecef;
+    max-height: 18vh;
+    min-height: 18vh;
   }
   
   .form-page .form-logo {
     max-height: 150px;
+    width: 30vw;
   }
   
   .form-page .form-section {
-    padding: 1rem;
+    height: auto;
+    max-height: none;
+    min-height: 82vh;
+    padding: 2rem 3rem;
+    
   }
   
   .form-page .form-success-container {

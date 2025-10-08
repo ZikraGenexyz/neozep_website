@@ -185,7 +185,7 @@ export default function FormWithUniqueCodePage() {
                       <div style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#e74c3c' }}>
                         ❌ Access Denied
                       </div>
-                      <div style={{ color: '#666', marginBottom: '2rem' }}>
+                      <div style={{ color: '#666' }}>
                         {codeError || 'Invalid access code'}
                       </div>
                     </div>
@@ -221,7 +221,7 @@ export default function FormWithUniqueCodePage() {
                       </svg>
                     </div>
                     <h2 className="form-success-title">Thank You!</h2>
-                    <p className="form-success-message">Your submission has been received successfully. <br />Result will be sent to your email in 2x24 hours.</p>
+                    <p className="form-success-message">Your submission has been received successfully. Result will be sent to your email in 2x24 hours.</p>
                   </div>
                 ) : (
                   <div className="form-container">

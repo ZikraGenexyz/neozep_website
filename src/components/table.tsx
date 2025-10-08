@@ -40,14 +40,13 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
-  // const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rowSpan, setRowSpan] = useState(10);
   const [page, setPage] = useState(1);
   const [rowStart, setRowStart] = useState(0);
-  const [uploadProgressList, setUploadProgressList] = useState<{ id: number, progress: number, uploading: boolean }[]>([]);
+  const [uploadProgressList, setUploadProgressList] = useState<{ id: number, progress: number, status: 'idle' | 'uploading' | 'sending' }[]>([]);
   
   const totalEntries = submissions.length;
   const totalPages = Math.ceil(totalEntries / rowSpan);
@@ -80,7 +79,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
         (data.submissions || []).map((s: { id: number }) => ({
           id: s.id,
           progress: 0,
-          uploading: false
+          status: 'idle'
         }))
       );
     } catch (err) {
@@ -184,36 +183,6 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
     }
   };
   
-  // Handle status change
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleStatusChange = async (id: number, newStatus: 'pending' | 'finished' | 'rejected') => {
-    setActionLoading(id);
-    try {
-      const response = await fetch(`/api/submissions/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to update status');
-      }
-      
-      // Update the submission in the local state
-      setSubmissions(submissions.map(submission => 
-        submission.id === id ? { ...submission, status: newStatus } : submission
-      ));
-      
-    } catch (err) {
-      console.error('Error updating status:', err);
-      alert('Failed to update status. Please try again.');
-    } finally {
-      setActionLoading(null);
-    }
-  };
-  
   // Handle delete
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDelete = async (id: number) => {
@@ -269,12 +238,12 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
     console.log(submissionId);
 
     setUploadProgressList(prevList => 
-      prevList.map(p => p.id === submissionId ? { ...p, uploading: true } : p)
+      prevList.map(p => p.id === submissionId ? { ...p, status: 'uploading' } : p)
     );
     
     if (!file) {
       setUploadProgressList(prevList => 
-        prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+        prevList.map(p => p.id === submissionId ? { ...p, status: 'idle' } : p)
       );
       return;
     }
@@ -283,7 +252,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
     if (!file.type.startsWith('video/')) {
       alert('Please select a video file');
       setUploadProgressList(prevList => 
-        prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+        prevList.map(p => p.id === submissionId ? { ...p, status: 'idle' } : p)
       );
       return;
     }
@@ -316,13 +285,17 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           alert('Upload failed: ' + error.message);
           setActionLoading(null);
           setUploadProgressList(prevList => 
-            prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+            prevList.map(p => p.id === submissionId ? { ...p, status: 'idle' } : p)
           );
         },
         async () => {
           try {
-            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            setUploadProgressList(prevList => 
+              prevList.map(p => p.id === submissionId ? { ...p, status: 'sending' } : p)
+            );
             
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+
             // Update submission with video URL
             const response = await fetch(`/api/submissions/${submissionId}`, {
               method: 'PATCH',
@@ -353,7 +326,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           } finally {
             setActionLoading(null);
             setUploadProgressList(prevList => 
-              prevList.map(p => p.id === submissionId ? { ...p, uploading: false, progress: 0 } : p)
+              prevList.map(p => p.id === submissionId ? { ...p, status: 'idle', progress: 0 } : p)
             );
             setUploadProgress(0);
             setIsProcessing(false);
@@ -371,7 +344,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
       alert('Error starting upload');
       setActionLoading(null);
       setUploadProgressList(prevList => 
-        prevList.map(p => p.id === submissionId ? { ...p, uploading: false } : p)
+        prevList.map(p => p.id === submissionId ? { ...p, status: 'idle' } : p)
       );
     }
   };
@@ -480,7 +453,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
                         Open
                       </a>
                     ) : (
-                      !uploadProgressList.find(p => p.id === submission.id)?.uploading ? (
+                      uploadProgressList.find(p => p.id === submission.id)?.status === 'idle' ? (
                         <button 
                           className="action-btn upload-btn"
                           onClick={() => handleUploadVideo(submission.id)}
@@ -494,7 +467,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
                           <span className="uploading-btn-fill" style={{ width: `${uploadProgressList.find(p => p.id === submission.id)?.progress ?? 0}%` }} />
                           <div className="uploading-btn-text">
                             <div className="spinner"></div>
-                            Uploading
+                            { uploadProgressList.find(p => p.id === submission.id)?.status === 'uploading' ? 'Uploading' : 'Sending'}
                           </div>
                         </div>
                       )
