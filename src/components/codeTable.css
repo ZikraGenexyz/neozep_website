@@ -490,14 +490,15 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  text-align: left;
 }
 
 .code-copy-icon-container {
   cursor: pointer;
   background-color: #dadadacb;
   border-radius: 0.25rem;
-  width: 2rem;
-  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;

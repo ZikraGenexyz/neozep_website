@@ -37,6 +37,7 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const totalEntries = uniqueCodes.length;
   const totalPages = Math.ceil(totalEntries / rowSpan);
+  const toastTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Update rowStart when page or rowSpan changes
   useEffect(() => {
@@ -64,16 +65,22 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   const handleCopyLink = async (link: string) => {
     try {
       await navigator.clipboard.writeText(link);
-      setToastMessage('Link copied to clipboard!');
+      if (toastTimeout.current) {
+        clearTimeout(toastTimeout.current);
+      }
+      setToastMessage(null);
+      setTimeout(() => {
+        setToastMessage('Link copied to clipboard!');
+      }, 300);
       
       // Auto-hide after 3 seconds
-      setTimeout(() => {
+      toastTimeout.current = setTimeout(() => {
         setToastMessage(null);
-      }, 1000);
+      }, 2000);
     } catch (err) {
       console.error('Failed to copy link:', err);
       setToastMessage('Failed to copy link');
-      setTimeout(() => setToastMessage(null), 3000);
+      toastTimeout.current = setTimeout(() => setToastMessage(null), 2000);
     }
   };
 

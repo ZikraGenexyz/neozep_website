@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic';
 // GET /api/unique-code/validate/[code] - Validate a unique code by path parameter
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
-    const { code } = params;
+    const { code } = await params;
     
     if (!code) {
       return NextResponse.json(
