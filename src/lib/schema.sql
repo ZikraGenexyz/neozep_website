@@ -39,10 +39,14 @@ CREATE TABLE IF NOT EXISTS unique_codes (
   id SERIAL PRIMARY KEY,
   code VARCHAR(50) NOT NULL UNIQUE,
   is_used BOOLEAN DEFAULT FALSE,
+  is_copied BOOLEAN DEFAULT FALSE,
   submission_id INTEGER REFERENCES submissions(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   used_at TIMESTAMP WITH TIME ZONE
 );
+
+-- ALTER TABLE unique_codes
+--   ADD COLUMN IF NOT EXISTS is_copied BOOLEAN DEFAULT FALSE;
 
 -- Create index on code for faster lookups
 CREATE INDEX IF NOT EXISTS idx_unique_codes_code ON unique_codes(code);

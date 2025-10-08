@@ -6,7 +6,8 @@ import {
   createMultipleUniqueCodes,
   getUnusedUniqueCodes,
   getUsedUniqueCodes,
-  markUniqueCodeAsUsed
+  markUniqueCodeAsUsed,
+  deleteUniqueCode
 } from '@/lib/models/unique_code';
 
 export const dynamic = 'force-dynamic';
@@ -114,6 +115,21 @@ export async function PUT(
     console.error('Error marking unique code as used:', error);
     return NextResponse.json(
       { error: 'Failed to mark unique code as used' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE /api/unique-code/[id] - Delete a unique code by id
+export async function DELETE(request: NextRequest) {
+  try {
+    const { code } = await request.json();
+    await deleteUniqueCode(code);
+    return NextResponse.json({ message: 'Unique code deleted' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting unique code:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete unique code' },
       { status: 500 }
     );
   }

@@ -82,6 +82,23 @@ export async function markUniqueCodeAsUsed(code: string, submission_id?: number)
   return result.rows[0];
 }
 
+// Mark unique code as copied
+export async function markUniqueCodeAsCopied(code: string, is_copied: boolean): Promise<UniqueCode | null> {
+  const result = await query(
+    `UPDATE unique_codes 
+     SET is_copied = $2
+     WHERE code = $1
+     RETURNING *`,
+    [code, is_copied]
+  );
+  
+  if (result.rows.length === 0) {
+    return null;
+  }
+  
+  return result.rows[0];
+}
+
 // Get unused unique codes
 export async function getUnusedUniqueCodes(): Promise<UniqueCode[]> {
   const result = await query(
@@ -99,8 +116,8 @@ export async function getUsedUniqueCodes(): Promise<UniqueCode[]> {
 }
 
 // Delete a unique code
-export async function deleteUniqueCode(id: number): Promise<boolean> {
-  const result = await query('DELETE FROM unique_codes WHERE id = $1', [id]);
+export async function deleteUniqueCode(code: string): Promise<boolean> {
+  const result = await query('DELETE FROM unique_codes WHERE code = $1', [code]);
   return result.rowCount! > 0;
 }
 

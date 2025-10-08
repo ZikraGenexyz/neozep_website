@@ -3,11 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import "./codeTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface UniqueCode {
   id: number;
   code: string;
+  is_copied: boolean;
   is_used: boolean;
   created_at: string;
   used_at?: string;
@@ -20,7 +21,7 @@ interface CodeTableProps {
 
 export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   // const router = useRouter();
-  const [sortColumn, setSortColumn] = useState("created_at");
+  const [sortColumn, setSortColumn] = useState("status");
   const [sortDirection, setSortDirection] = useState("desc");
   const [uniqueCodes, setUniqueCodes] = useState<UniqueCode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,8 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   const [rowStart, setRowStart] = useState(0);
   const [uploadProgressList, setUploadProgressList] = useState<{ id: number, progress: number, uploading: boolean }[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null);
   const totalEntries = uniqueCodes.length;
   const totalPages = Math.ceil(totalEntries / rowSpan);
   const toastTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -62,13 +65,34 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
     }
   });
 
-  const handleCopyLink = async (link: string) => {
+  const handleCopyLink = async (link: string, code: string) => {
     try {
       await navigator.clipboard.writeText(link);
       if (toastTimeout.current) {
         clearTimeout(toastTimeout.current);
       }
       setToastMessage(null);
+
+      const response = await fetch('/api/unique-code/set-copied', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code, is_copied: true }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to set unique code as copied ');
+      }
+      
+      setUniqueCodes(prev =>
+        prev.map(uniqueCode =>
+          uniqueCode.code === code
+            ? { ...uniqueCode, is_copied: true }
+            : uniqueCode
+        )
+      );
+
       setTimeout(() => {
         setToastMessage('Link copied to clipboard!');
       }, 300);
@@ -121,6 +145,23 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
     fetchUniqueCodes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openDropdownId !== null) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.code-status-dropdown')) {
+          setOpenDropdownId(null);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openDropdownId]);
   
   // Expose fetchSubmissions function via ref
   useEffect(() => {
@@ -165,17 +206,54 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
     }
   };
   
+  // Handle status change
+  const handleStatusChange = async (id: number, newStatus: boolean) => {
+    setActionLoading(id);
+    try {
+      const response = await fetch('/api/unique-code/set-copied', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          code: uniqueCodes.find(uc => uc.id === id)?.code, 
+          is_copied: newStatus 
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update status');
+      }
+      
+      // Update the unique code in the local state
+      setUniqueCodes(uniqueCodes.map(uniqueCode => 
+        uniqueCode.id === id ? { ...uniqueCode, is_copied: newStatus } : uniqueCode
+      ));
+      
+      setOpenDropdownId(null);
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Failed to update status. Please try again.');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   // Handle delete
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this submission?')) {
+  const handleDelete = async (id: number, code: string) => {
+    if (!confirm('Are you sure you want to delete this unique code?')) {
       return;
     }
     
     setActionLoading(id);
     try {
-      const response = await fetch(`/api/unique-codes/${id}`, {
+      const response = await fetch(`/api/unique-code`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code }),
       });
       
       if (!response.ok) {
@@ -185,7 +263,7 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
       // Remove the submission from the local state
       setUniqueCodes(uniqueCodes.filter(uniqueCode => uniqueCode.id !== id));
       
-      fetchUniqueCodes();
+      // fetchUniqueCodes();
     } catch (err) {
       console.error('Error deleting unique code:', err);
       alert('Failed to delete unique code. Please try again.');
@@ -226,7 +304,7 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
           <thead>
             <tr>
               <th className={getSortClass("no") + " unsortable"}>No</th>
-              <th className={getSortClass("created_at")} onClick={() => handleSort("created_at")}>Created At</th>
+              <th className={getSortClass("status")} onClick={() => handleSort("status")}>Status</th>
               <th className={getSortClass("code") + " unsortable"}>Unique Code</th>
               <th className={getSortClass("link") + " unsortable"}>Form Link</th>
             </tr>
@@ -248,13 +326,60 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
               sortedUniqueCodes.slice(rowStart, rowStart + rowSpan).map((uniqueCode, index) => (
                 <tr key={uniqueCode.id}>
                   <td>{rowStart + index + 1}</td>
-                  <td>{new Date(uniqueCode.created_at).toLocaleString()}</td>
+                  <td>
+                    <div className="code-status-dropdown">
+                      <span 
+                        className={`code-status-badge code-status-${uniqueCode.is_copied ? 'copied' : 'unused'}`}
+                        onClick={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          setDropdownPosition({
+                            top: rect.bottom + 4,
+                            left: rect.left
+                          });
+                          setOpenDropdownId(openDropdownId === uniqueCode.id ? null : uniqueCode.id);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {uniqueCode.is_copied ? 'Copied' : 'Unused'}
+                      </span>
+                      {openDropdownId === uniqueCode.id && (
+                        <div 
+                          className="code-status-dropdown-content"
+                          style={{
+                            position: 'fixed',
+                            top: dropdownPosition?.top,
+                            left: dropdownPosition?.left,
+                          }}
+                        >
+                          <button 
+                            className="code-dropdown-item"
+                            onClick={() => handleStatusChange(uniqueCode.id, false)}
+                            disabled={actionLoading === uniqueCode.id || !uniqueCode.is_copied}
+                          >
+                            Unused
+                          </button>
+                          <button 
+                            className="code-dropdown-item"
+                            onClick={() => handleStatusChange(uniqueCode.id, true)}
+                            disabled={actionLoading === uniqueCode.id || uniqueCode.is_copied}
+                          >
+                            Copied
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
                   <td>{uniqueCode.code}</td>
                   <td>
                     <div className="code-table-link-container">
                       {window.location.origin}/form/{uniqueCode.code}
-                      <div className="code-copy-icon-container">
-                        <FontAwesomeIcon icon={faCopy} onClick={() => handleCopyLink(`${window.location.origin}/form/${uniqueCode.code}`)} />
+                      <div className="code-action-buttons">
+                        <div className="code-action-btn copy" onClick={() => handleCopyLink(`${window.location.origin}/form/${uniqueCode.code}`, uniqueCode.code)}>
+                          <FontAwesomeIcon icon={faCopy}/>
+                        </div>
+                        <div className="code-action-btn delete" onClick={() => handleDelete(uniqueCode.id, uniqueCode.code)}>
+                          <FontAwesomeIcon icon={faTrash} />
+                        </div>
                       </div>
                     </div>
                   </td>

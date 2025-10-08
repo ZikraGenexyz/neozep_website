@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSubmission, getSubmissions } from '@/lib/models/submission';
+import { createSubmission, getSubmissions, getSubmissionsWithUniqueCodes } from '@/lib/models/submission';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,9 +9,15 @@ export async function GET(request: NextRequest) {
     // Get status from query parameters
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get('status') || undefined;
-    
-    const submissions = await getSubmissions(status);
-    return NextResponse.json({ submissions }, { status: 200 });
+    const withUniqueCode = searchParams.get('withUniqueCode') || false;
+
+    if (withUniqueCode) {
+      const submissions = await getSubmissionsWithUniqueCodes(status);
+      return NextResponse.json({ submissions }, { status: 200 });
+    } else {
+      const submissions = await getSubmissions(status);
+      return NextResponse.json({ submissions }, { status: 200 });
+    }
   } catch (error) {
     console.error('Error fetching submissions:', error);
     return NextResponse.json(

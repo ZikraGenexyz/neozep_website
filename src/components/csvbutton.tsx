@@ -15,6 +15,14 @@ interface Submission {
   telepon: string;
   status: 'pending' | 'finished' | 'rejected';
   video_url?: string;
+  unique_code?: {
+    id: number;
+    code: string;
+    is_used: boolean;
+    is_copied: boolean;
+    created_at: string;
+    used_at?: string;
+  };
 }
 
 interface CSVDownloaderProps {
@@ -31,17 +39,22 @@ export default function CSVDownloader({ status, className = "download-csv-button
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        let url = '/api/submissions';
+        // Build URL with proper parameter handling
+        const url = new URL('/api/submissions', window.location.origin);
         if (status) {
-          url += `?status=${status}`;
+          url.searchParams.set('status', status);
         }
+        url.searchParams.set('withUniqueCode', 'true');
+        // Since we updated the API to default to including unique codes,
+        // we don't need to explicitly set withUniqueCode=true
         
-        const response = await fetch(url);
+        const response = await fetch(url.toString());
         if (!response.ok) {
           throw new Error('Failed to fetch submissions');
         }
         
         const data = await response.json();
+        console.log('API Response:', data);
         setSubmissions(data.submissions || []);
       } catch (err) {
         console.error('Error fetching submissions:', err);
@@ -70,6 +83,7 @@ export default function CSVDownloader({ status, className = "download-csv-button
       'Email',
       'Telepon',
       'Status',
+      'Unique Code',
       'Video URL'
     ];
     
@@ -86,6 +100,7 @@ export default function CSVDownloader({ status, className = "download-csv-button
           submission.email,
           submission.telepon,
           submission.status,
+          submission.unique_code ? submission.unique_code.code : '',
           submission.video_url || ''
         ].join(',');
       })

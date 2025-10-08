@@ -90,7 +90,7 @@
 
 .form-page .form-group {
   flex: 1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .form-page .form-label {
@@ -168,7 +168,7 @@
 .form-page .form-buttons {
   display: flex;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .form-page .required-field::after {

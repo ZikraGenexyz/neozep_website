@@ -83,17 +83,20 @@ export default function Navbar() {
       <ul className="nav-list">
         <li>
           <Link href="/" className="nav-link pending">
-            <FontAwesomeIcon icon={faHourglass} className="icon-fa" /> Pending
+            <FontAwesomeIcon icon={faHourglass} className="icon-fa" /> 
+            <span>Pending</span>
           </Link>
         </li>
         <li>
           <Link href="/finished" className="nav-link finished">
-            <FontAwesomeIcon icon={faCheck} className="icon-fa" /> Finished
+            <FontAwesomeIcon icon={faCheck} className="icon-fa" /> 
+            <span>Finished</span>
           </Link>
         </li>
         <li>
           <Link href="/unique-code" className="nav-link unique-code">
-            <FontAwesomeIcon icon={faKey} className="icon-fa" /> Unique Code
+            <FontAwesomeIcon icon={faKey} className="icon-fa" /> 
+            <span>Unique Code</span>
           </Link>
         </li>
       </ul>
@@ -101,7 +104,8 @@ export default function Navbar() {
       <ul className="nav-list">
         <li>
           <a onClick={handleLogout} className="nav-link logout">
-            <FontAwesomeIcon icon={faSignOutAlt} className="icon-fa" /> Logout
+            <FontAwesomeIcon icon={faSignOutAlt} className="icon-fa" /> 
+            <span>Logout</span>
           </a>
         </li>
       </ul>

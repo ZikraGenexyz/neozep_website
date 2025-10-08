@@ -33,7 +33,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
+
+/* .navbar.hidden .nav-link span {
+  display: none;
+} */
+
+/* .navbar.hidden .nav-link .icon-fa {
+  margin-bottom: 0;
+} */
 
 .navbar-dark {
   background-color: #111827; /* dark:bg-gray-900 */

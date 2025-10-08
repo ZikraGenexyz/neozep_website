@@ -98,7 +98,7 @@ export default function FormWithUniqueCodePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({...submissionData, alamat: formData.alamat + ", Kelurahan " + formData.kelurahan + ", Kecamatan " + formData.kecamatan}),
+        body: JSON.stringify({...submissionData, alamat: formData.alamat + ", Kecamatan " + formData.kecamatan + ", Kelurahan " + formData.kelurahan}),
       });
       
       if (!response.ok) {
