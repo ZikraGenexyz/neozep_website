@@ -1,5 +1,6 @@
 .navbar {
   width: 16vw; /* w-64 */
+  min-width: 184px;
   background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
   padding: 1.5rem; /* p-6 */
   display: flex;
@@ -10,6 +11,7 @@
 }
 
 .navbar.hidden {
+  min-width: 92px;
   width: 8vw; /* w-64 */
   align-items: center;
   padding: 1.5rem 0.5rem;
@@ -90,7 +92,7 @@
 }
 
 .nav-link {
-  color: #ffffff9d;
+  color: #ffffff76;
   font-size: 14px;
   padding: 0.5rem;
   cursor: pointer;
