@@ -80,6 +80,7 @@
 .data-table th:nth-child(5), .data-table td:nth-child(5) { /* Alamat */
   width: 18rem;
   min-width: 180px;
+  white-space: pre-line;
 }
 
 .data-table th:nth-child(6), .data-table td:nth-child(6) { /* Email */

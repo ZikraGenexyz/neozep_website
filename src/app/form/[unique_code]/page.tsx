@@ -15,6 +15,29 @@ interface UniqueCodeData {
   submission_id?: number;
 }
 
+interface Province {
+  id: number;
+  name: string;
+}
+
+interface City {
+  id: number;
+  provinceId: number;
+  name: string;
+}
+
+interface District {
+  id: number;
+  cityId: number;
+  name: string;
+}
+
+interface Village {
+  id: number;
+  districtId: number;
+  name: string;
+}
+
 export default function FormWithUniqueCodePage() {
   const router = useRouter();
   const params = useParams();
@@ -26,16 +49,56 @@ export default function FormWithUniqueCodePage() {
   const [codeData, setCodeData] = useState<UniqueCodeData | null>(null);
   const [codeLoading, setCodeLoading] = useState(true);
   const [codeError, setCodeError] = useState<string | null>(null);
+  const [kotaKabupatenOptions, setKotaKabupatenOptions] = useState<string[]>([]);
+  const [kecamatanOptions, setKecamatanOptions] = useState<string[]>([]);
+  const [kelurahanOptions, setKelurahanOptions] = useState<string[]>([]);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
+  const [villages, setVillages] = useState<Village[]>([]);
   
   const [formData, setFormData] = useState({
     nama: "",
     namaToko: "",
-    alamat: "",
-    email: "",
-    telepon: "",
+    jalan: "",
+    provinsi: "",
+    kota_kabupaten: "",
     kecamatan: "",
-    kelurahan: ""
+    kelurahan: "",
+    email: "",
+    telepon: ""
   });
+
+  // Load data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Load provinces
+        const provincesRes = await fetch('/data/provinces.json');
+        const provincesData = await provincesRes.json();
+        setProvinces(provincesData as Province[]);
+        
+        // Load cities
+        const citiesRes = await fetch('/data/cities.json');
+        const citiesData = await citiesRes.json();
+        setCities(citiesData as City[]);
+        
+        // Load districts
+        const districtsRes = await fetch('/data/districts.json');
+        const districtsData = await districtsRes.json();
+        setDistricts(districtsData as District[]);
+        
+        // Load villages
+        const villagesRes = await fetch('/data/villages.json');
+        const villagesData = await villagesRes.json();
+        setVillages(villagesData as Village[]);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   // Validate unique code on component mount
   useEffect(() => {
@@ -67,12 +130,78 @@ export default function FormWithUniqueCodePage() {
     }
   }, [uniqueCode]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Handle province change
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const provinceId = provinces.find(province => province.name === e.target.value)?.id;
+    setFormData(prev => ({
+      ...prev,
+      provinsi: e.target.value,
+      kota_kabupaten: "",
+      kecamatan: "",
+      kelurahan: ""
+    }));
+
+    // Filter cities by province
+    const filteredCities = cities.filter(city => city.provinceId === provinceId);
+
+    setKotaKabupatenOptions(filteredCities.map(city => city.name));
+    setKecamatanOptions([]);
+    setKelurahanOptions([]);
+  };
+
+  // Handle city change
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const cityId = cities.find(city => city.name === e.target.value)?.id;
+    setFormData(prev => ({
+      ...prev,
+      kota_kabupaten: e.target.value,
+      kecamatan: "",
+      kelurahan: ""
+    }));
+    
+    // Filter districts by city
+    const filteredDistricts = districts.filter(district => district.cityId === cityId);
+    setKecamatanOptions(filteredDistricts.map(district => district.name));
+    setKelurahanOptions([]);
+  };  
+
+  // Handle district change
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const districtId = districts.find(district => district.name === e.target.value)?.id;
+    setFormData(prev => ({
+      ...prev,
+      kecamatan: e.target.value,
+      kelurahan: ""
+    }));
+    
+    // Filter villages by district
+    const filteredVillages = villages.filter(village => village.districtId === districtId);
+    setKelurahanOptions(filteredVillages.map(village => village.name));
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value
     });
+  };
+
+  // Add this to your component
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+
+    // Set custom validation message
+    const emailInput = e.target;
+    emailInput.setCustomValidity('');
+    
+    if (emailInput.validity.typeMismatch) {
+      emailInput.setCustomValidity('Please enter a valid email address');
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -101,7 +230,7 @@ export default function FormWithUniqueCodePage() {
       const submissionData = {
         nama: formData.nama,
         nama_toko: formData.namaToko,
-        alamat: formData.alamat,
+        alamat: formData.jalan + "\n\nKelurahan " + formData.kelurahan + ", Kecamatan " + formData.kecamatan + ", " + formData.kota_kabupaten + ", " + formData.provinsi,
         email: formData.email,
         telepon: formData.telepon,
         kecamatan: formData.kecamatan,
@@ -114,7 +243,7 @@ export default function FormWithUniqueCodePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({...submissionData, alamat: formData.alamat + ", Kecamatan " + formData.kecamatan + ", Kelurahan " + formData.kelurahan}),
+        body: JSON.stringify({...submissionData}),
       });
       
       if (!response.ok) {
@@ -139,11 +268,13 @@ export default function FormWithUniqueCodePage() {
       setFormData({
         nama: "",
         namaToko: "",
-        alamat: "",
-        email: "",
-        telepon: "",
+        jalan: "",
+        provinsi: "",
+        kota_kabupaten: "",
         kecamatan: "",
-        kelurahan: ""
+        kelurahan: "",
+        email: "",
+        telepon: ""
       });
       
       // Show success message
@@ -272,44 +403,108 @@ export default function FormWithUniqueCodePage() {
                           required
                         />
                       </div>
-                      
+
                       <div className="form-group">
-                        <label htmlFor="alamat" className="form-label required-field">Alamat</label>
-                        <textarea
-                          id="alamat"
-                          name="alamat"
-                          className="form-input form-textarea"
-                          value={formData.alamat}
+                        <label htmlFor="jalan" className="form-label required-field">Nama Jalan</label>
+                        <input
+                          type="text"
+                          id="jalan"
+                          name="jalan"
+                          className="form-input"
+                          value={formData.jalan}
                           onChange={handleInputChange}
                           required
-                        ></textarea>
+                        />
                       </div>
 
-                      <div className="form-row">  
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label htmlFor="provinsi" className="form-label required-field">Provinsi</label>
+                          <select
+                            id="provinsi"
+                            name="provinsi"
+                            className="form-input"
+                            value={formData.provinsi}
+                            onChange={handleProvinceChange}
+                            required
+                          >
+                            {formData.provinsi === "" && (
+                              <option value="" disabled>Pilih Provinsi</option>
+                            )}
+                            {provinces.map(province => (
+                              <option key={province.name} value={province.name} disabled={formData.provinsi === province.name}>
+                                {province.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="kota_kabupaten" className="form-label required-field">Kota / Kabupaten</label>
+                          <select
+                            id="kota_kabupaten"
+                            name="kota_kabupaten"
+                            className="form-input"
+                            value={formData.kota_kabupaten}
+                            onChange={handleCityChange}
+                            disabled={formData.provinsi === ""}
+                            required
+                          >
+                            {formData.kota_kabupaten === "" && (
+                              <option value="" disabled>Pilih Kota / Kabupaten</option>
+                            )}
+                            {kotaKabupatenOptions.map(kotaKabupaten => (
+                              <option key={kotaKabupaten} value={kotaKabupaten} disabled={formData.kota_kabupaten === kotaKabupaten}>
+                                {kotaKabupaten}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="form-row">
                         <div className="form-group">
                           <label htmlFor="kecamatan" className="form-label required-field">Kecamatan</label>
-                          <input
-                            type="text"
+                          <select
                             id="kecamatan"
                             name="kecamatan"
                             className="form-input"
                             value={formData.kecamatan}
-                            onChange={handleInputChange}
+                            onChange={handleDistrictChange}
+                            disabled={formData.kota_kabupaten === ""}
                             required
-                          />
+                          >
+                            {formData.kecamatan === "" && (
+                              <option value="" disabled>Pilih Kecamatan</option>
+                            )}
+                            {kecamatanOptions.map(kecamatan => (
+                              <option key={kecamatan} value={kecamatan} disabled={formData.kecamatan === kecamatan}>
+                                {kecamatan}
+                              </option>
+                            ))}
+                          </select>
                         </div>
 
                         <div className="form-group">
                           <label htmlFor="kelurahan" className="form-label required-field">Kelurahan</label>
-                          <input
-                            type="text"
+                          <select
                             id="kelurahan"
                             name="kelurahan"
                             className="form-input"
                             value={formData.kelurahan}
                             onChange={handleInputChange}
+                            disabled={formData.kecamatan === ""}
                             required
-                          />
+                          >
+                            {formData.kelurahan === "" && (
+                              <option value="" disabled>Pilih Kelurahan</option>
+                            )}
+                            {kelurahanOptions.map(kelurahan => (
+                              <option key={kelurahan} value={kelurahan} disabled={formData.kelurahan === kelurahan}>
+                                {kelurahan}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
 
@@ -322,7 +517,8 @@ export default function FormWithUniqueCodePage() {
                             name="email"
                             className="form-input"
                             value={formData.email}
-                            onChange={handleInputChange}
+                            onChange={handleEmailChange}
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                             required
                           />
                         </div>
