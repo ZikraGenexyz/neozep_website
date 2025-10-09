@@ -354,10 +354,56 @@
   margin-bottom: 2rem;
 }
 
+/* Password Toggle Styles */
+.login-page .password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-page .password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+  color: var(--text); /* Make FontAwesome icon black */
+  width: 18px;
+  height: 18px;
+}
+
+.login-page .password-toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.login-page .password-toggle-btn:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Adjust input padding to make room for toggle button */
+.login-page .password-input-wrapper .form-input {
+  padding-right: 45px;
+}
+
 /* Responsive styles for mobile devices */
 @media (max-width: 768px) {
+
+  .login-page .main-content {
+    padding: 1.5rem;
+    height: 100vh;
+  }
+
   .login-page .form-page-layout {
     flex-direction: column;
+    min-height: auto;
   }
 
   .login-page .login-form {
@@ -365,10 +411,11 @@
   }
   
   .login-page .form-logo-section {
-    max-height: 16vh;
+    max-height: 10vh;
     padding: 1.5rem;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border: 0;
   }
 
   .login-page .form-logo-wrapper span {
@@ -381,10 +428,15 @@
   }
   
   .login-page .form-section {
-    padding: 1rem;
+    display: flex;
+    padding: 1.5rem 0 0 0;
     align-items: center;
-    justify-content: start;
-    margin-top: 2rem;
+    justify-content: center;
+    max-height: 90vh;
+  }
+
+  .login-page .form-container {
+    width: 100%;
   }
   
   .login-page .login-info-text {
@@ -430,43 +482,4 @@
   .login-page .form-success-message {
     font-size: 1rem;
   }
-}
-
-/* Password Toggle Styles */
-.login-page .password-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.login-page .password-toggle-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-  z-index: 10;
-  color: var(--text); /* Make FontAwesome icon black */
-  width: 18px;
-  height: 18px;
-}
-
-.login-page .password-toggle-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.login-page .password-toggle-btn:focus {
-  outline: 2px solid #007bff;
-  outline-offset: 2px;
-}
-
-/* Adjust input padding to make room for toggle button */
-.login-page .password-input-wrapper .form-input {
-  padding-right: 45px;
 }

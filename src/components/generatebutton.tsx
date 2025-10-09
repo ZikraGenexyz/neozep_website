@@ -22,7 +22,7 @@ export default function GenerateButton({ className = "generate-button", style, o
       disabled={loading}
     >
       <FontAwesomeIcon icon={faAdd} />
-      Generate Code
+      <span>Generate Code</span>
     </button>
   );
 }

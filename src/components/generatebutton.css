@@ -20,3 +20,17 @@ opacity: 0.6;
 .generate-button .icon {
   transition: transform 0.5s ease;
 }
+
+@media (max-width: 768px) {
+  .generate-button span {
+    display: none;
+  }
+
+  .generate-button {
+    height: 2.5rem;
+    width: 2.5rem;
+    padding: 0 !important;
+    justify-content: center;
+    align-items: center;
+  }
+}

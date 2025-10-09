@@ -79,7 +79,23 @@ export default function FormWithUniqueCodePage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
+    const response = await fetch(`/api/unique-code/validate/${uniqueCode}`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Invalid access code');
+    }
+
+    const data = await response.json();
+    setCodeData(data);
+
+    if (data.is_used) {
+      setCodeError('This access code has already been used');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Convert form field names to match API expectations
       const submissionData = {
@@ -113,6 +129,11 @@ export default function FormWithUniqueCodePage() {
         },
         body: JSON.stringify({ code: uniqueCode, submission_id: (await response.json()).submission.id }),
       });
+
+      if (!response2.ok) {
+        const errorData = await response2.json();
+        throw new Error(errorData.error || 'Failed to mark unique code as used');
+      }
 
       // Reset the form
       setFormData({

@@ -22,7 +22,7 @@ interface CodeTableProps {
 export default function CodeTable({ tableRef }: CodeTableProps = {}) {
   // const router = useRouter();
   const [sortColumn, setSortColumn] = useState("status");
-  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortDirection, setSortDirection] = useState("asc");
   const [uniqueCodes, setUniqueCodes] = useState<UniqueCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,10 +49,10 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
 
   // Sort submissions when sortColumn or sortDirection changes
   const sortedUniqueCodes = [...uniqueCodes].sort((a, b) => {
-    if (sortColumn === 'created_at') {
+    if (sortColumn === 'status') {
       // Sort by submission_time as Date
-      const aTime = new Date(a.created_at).getTime();
-      const bTime = new Date(b.created_at).getTime();
+      const aTime = a.is_copied ? 1 : 0;
+      const bTime = b.is_copied ? 1 : 0;
       if (aTime === bTime) return 0;
       const comparison = aTime < bTime ? -1 : 1;
       return sortDirection === 'asc' ? comparison : -comparison;
@@ -398,7 +398,7 @@ export default function CodeTable({ tableRef }: CodeTableProps = {}) {
             onClick={goToPreviousPage}
             disabled={page === 1}
           >
-            Previous
+            Prev
           </button>
           
           {totalPages <= 7 ? (

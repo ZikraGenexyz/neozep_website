@@ -56,3 +56,11 @@ CREATE INDEX IF NOT EXISTS idx_unique_codes_used ON unique_codes(is_used);
 
 -- Create index on submission_id for foreign key lookups
 CREATE INDEX IF NOT EXISTS idx_unique_codes_submission ON unique_codes(submission_id);
+
+-- Delete all data
+DELETE FROM submissions;
+DELETE FROM unique_codes;
+
+-- Reset sequences to start from 1
+ALTER SEQUENCE submissions_id_seq RESTART WITH 1;
+ALTER SEQUENCE unique_codes_id_seq RESTART WITH 1;

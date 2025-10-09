@@ -47,7 +47,16 @@ export default function Navbar() {
     initialize();
   });
 
-  const handleToggle = () => {
+  const handleToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.cookie = "navbar_hidden=" + (!isHidden);
+    setIsHidden(!isHidden);
+  };
+
+  const handleTouchToggle = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     document.cookie = "navbar_hidden=" + (!isHidden);
     setIsHidden(!isHidden);
   };
@@ -110,9 +119,14 @@ export default function Navbar() {
         </li>
       </ul>
       <hr className="border" />
-      <div className="close-button" onClick={handleToggle}>
+      <button 
+        className="close-button" 
+        onClick={handleToggle}
+        onTouchStart={handleTouchToggle}
+        type="button"
+      >
         <FontAwesomeIcon icon={faChevronLeft} className="icon-fa" />
-      </div>
+      </button>
     </nav>
   );
 }

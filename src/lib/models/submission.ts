@@ -236,3 +236,8 @@ export async function deleteSubmission(id: number): Promise<boolean> {
   const result = await query('DELETE FROM submissions WHERE id = $1', [id]);
   return result.rowCount! > 0;
 }
+
+export async function getSmallestId(): Promise<number> {
+  const result = await query('SELECT MIN(id) FROM submissions');
+  return result.rows[0].min;
+}

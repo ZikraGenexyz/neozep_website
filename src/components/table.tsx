@@ -10,6 +10,7 @@ import { faPlay, faUpload } from "@fortawesome/free-solid-svg-icons";
 interface Submission {
   id: number;
   submission_time: string;
+  created_at: string;
   nama: string;
   nama_toko: string;
   alamat: string;
@@ -35,13 +36,13 @@ interface DataTableProps {
 export default function DataTable({ status, tableRef }: DataTableProps = {}) {
   // const router = useRouter();
   const [sortColumn, setSortColumn] = useState("time");
-  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortDirection, setSortDirection] = useState("asc");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  // const [uploadProgress, setUploadProgress] = useState<number>(0);
+  // const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rowSpan, setRowSpan] = useState(10);
   const [page, setPage] = useState(1);
@@ -73,10 +74,11 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
       }
       
       const data = await response.json();
+      // Sort submissions by created_at ascending
       setSubmissions(data.submissions || []);
-      // Initialize uploadProgressList with id, progress: 0, uploading: false for each submission
+      // Initialize uploadProgressList with sequential id, progress: 0, status: 'idle' for each submission
       setUploadProgressList(
-        (data.submissions || []).map((s: { id: number }) => ({
+        data.submissions.map((s: { id: number }) => ({
           id: s.id,
           progress: 0,
           status: 'idle'
@@ -258,7 +260,6 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
     }
 
     setActionLoading(submissionId);
-    setUploadProgress(0);
 
     try {
       const storageRef = ref(storage, `videos/${submissionId}/${file.name}`);
@@ -277,7 +278,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           
           // When upload reaches 100%, set processing state to true
           if (percent === 100) {
-            setIsProcessing(true);
+            // setIsProcessing(true);
           }
         },
         (error) => {
@@ -328,8 +329,6 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
             setUploadProgressList(prevList => 
               prevList.map(p => p.id === submissionId ? { ...p, status: 'idle', progress: 0 } : p)
             );
-            setUploadProgress(0);
-            setIsProcessing(false);
             
             // Reset file input
             if (fileInputRef.current) {
@@ -377,26 +376,6 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
           accept="video/*"
         />
         
-        {/* Upload progress indicator */}
-        {/* {uploadingId !== null && uploadProgress > 0 && uploadProgress < 100 && ( */}
-          {/* <div className="upload-progress">
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${uploadProgress}%` }}></div>
-            </div>
-            <div className="progress-text">Uploading: {uploadProgress}%</div>
-          </div> */}
-        {/* )} */}
-        
-        {/* Processing indicator (circular loader) */}
-        {/* {uploadingId !== null && isProcessing && ( */}
-          {/* <div className="upload-progress">
-            <div className="circular-loader">
-              <div className="spinner"></div>
-              <div className="circular-loader-text">Processing video...</div>
-            </div>
-          </div> */}
-        {/* )} */}
-        
         <table className="data-table">
           <thead>
             <tr>
@@ -425,9 +404,9 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
                 <td rowSpan={10} className="no-data">No data available in table</td>
               </tr>
             ) : (
-              sortedSubmissions.slice(rowStart, rowStart + rowSpan).map((submission, index) => (
+              sortedSubmissions.slice(rowStart, rowStart + rowSpan).map((submission) => (
                 <tr key={submission.id}>
-                  <td>{rowStart + index + 1}</td>
+                  <td>{submission.id}</td>
                   <td>{new Date(submission.submission_time).toLocaleString()}</td>
                   <td>{submission.nama}</td>
                   <td>{submission.nama_toko}</td>
@@ -488,7 +467,7 @@ export default function DataTable({ status, tableRef }: DataTableProps = {}) {
             onClick={goToPreviousPage}
             disabled={page === 1}
           >
-            Previous
+            Prev
           </button>
           
           {totalPages <= 7 ? (

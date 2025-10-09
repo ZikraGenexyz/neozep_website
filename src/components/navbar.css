@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  z-index: 10;
   /* transition: all 0.3s ease; */
 }
 
@@ -156,13 +157,31 @@
   z-index: 50;
   padding: 0.5rem;
   background-color: #ffffff30;
-  border-radius: 50%;
+  border-radius: 100% !important;
+  border: none;
   transition-property: color, background-color, border-color;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  outline: none;
 }
 
 .close-button:hover {
   background-color: #ffffff49;
+}
+
+/* .close-button:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+} */
+
+.close-button:active {
+  background-color: #ffffff60;
+  transform: scale(0.95);
 }
 
 .close-button .icon-fa {
@@ -217,8 +236,22 @@
 
 @media (max-width: 768px) {
   .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    height: 100vh;
+    width: 60vw;
+  }
+
+  .navbar.hidden {
     width: 0;
     padding: 0;
-    display: none;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      width 0.3s ease,
+      padding 0.3s ease,
+      opacity 0.3s 0.15s; /* opacity transition delayed for smoother hide */
   }
 }

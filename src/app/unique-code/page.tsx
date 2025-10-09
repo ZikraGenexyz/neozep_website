@@ -1,6 +1,7 @@
 import Navbar from "../../components/navbar";
 import "../styles/layout.css";
 import CodeTableWrapper from "@/components/codeTableWrapper";
+import Header from "@/components/header";
 
 export default function FinishedPage() {
     return (
@@ -10,7 +11,7 @@ export default function FinishedPage() {
                 <div className="content-wrapper">
                     <main className="main-content">
                         {/* Main content goes here */}
-                        <h1 className="header-title">Unique Codes</h1>
+                        <Header status="Unique Codes" />
                         <div className="table-container">
                             <CodeTableWrapper status="finished" />
                         </div>
